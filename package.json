@@ -1,0 +1,52 @@
+{
+  "name": "ipt",
+  "version": "1.0.0",
+  "description": "iPipeTo - Pipe a list in, interactively select what comes out",
+  "repository": "ruyadorno/ipt",
+  "author": {
+    "name": "Ruy Adorno",
+    "url": "ruyadorno.com"
+  },
+  "bin": "src/cli.js",
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "scripts": {
+    "pretest": "xo",
+    "test": "ava --tap"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "pipe",
+    "interactive",
+    "list",
+    "inquirer",
+    "unix",
+    "terminal",
+    "workflow",
+    "cli-app",
+    "cli",
+    "ipt",
+    "menu"
+  ],
+  "dependencies": {
+    "copy-paste": "^1.1.4",
+    "get-stdin": "^5.0.1",
+    "inquirer": "^0.12.0",
+    "minimist": "^1.2.0",
+    "ttys": "0.0.3"
+  },
+  "devDependencies": {
+    "ava": "^0.11.0",
+    "tempfile": "^1.1.1",
+    "xo": "^0.12.1"
+  },
+  "xo": {
+    "rules": {
+      "no-negated-condition": 0
+    }
+  },
+  "license": "MIT"
+}
