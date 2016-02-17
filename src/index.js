@@ -45,8 +45,33 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 		}
 	}
 
+	function onForcedExit(e) {
+		if (options.debug) {
+			log.error(e.toString());
+		}
+		if (ttys.stdin !== p.stdin) {
+			ttys.stdin.end();
+			ttys.stdin.destroy();
+		}
+		if (ttys.stdout !== p.stdout) {
+			ttys.stdout.end();
+			ttys.stdout.destroy();
+		}
+		// release cursor by printing to sdterr
+		log.warn('\u001b[?25h');
+		p.exit(0);
+	}
+
+	function defineErrorHandlers() {
+		p.on('SIGINT', onForcedExit);
+		p.on('SIGTERM', onForcedExit);
+		p.on('error', onForcedExit);
+		ttys.stdout.on('error', onForcedExit);
+	}
+
 	function showList() {
 		patchCliCursor(p, ttys);
+		defineErrorHandlers();
 
 		var prompt = inquirer.createPromptModule({
 			input: ttys.stdin,
