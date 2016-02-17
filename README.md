@@ -15,14 +15,7 @@ Selected data is also output to _stdout_ allowing for easily composing various w
 
 ## Examples
 
-The default behavior of **ipt** is to allow for the selection of one item from the interactive list, once selected this item will be copied to your clipboard and output to _stdout_.
-
-
-### Using the copy to clipboard feature
-
-In the example below we show a menu containing the local directories. The selected choice gets copy to clipboard and we can reuse the selected value later with ctrl/cmd + V.
-
-![`ls | ipt` select item from menu and then `cat` followed by `cmd+v`](http://i.imgur.com/jiTgGy1.gif)
+The default behavior of **ipt** is to allow for the selection of one item from the interactive list, once selected this item will be output to _stdout_, you can also use `-c` option to copy the result to your clipboard.
 
 
 ### Using pipes to send selected value to next command
@@ -44,6 +37,14 @@ In the following example we list all the files from the folder `ls` and pipe tha
 You can also read a file as source of input data instead of reading from the standard input, here we read from a TODO file and redirect the selected items to be written in a DONE file.
 
 ![`ipt -m TODO >> DONE` selects multiple lines from a file and append them to another one](http://i.imgur.com/9tJSyEi.gif)
+
+
+### Using the copy to clipboard feature
+
+In the example below we show a menu containing the local directories. The selected choice gets copy to clipboard and we can reuse the selected value later with ctrl/cmd + V.
+
+![`ls | ipt -c` select item from menu and then `cat` followed by `cmd+v`](http://i.imgur.com/rQFtMQY.gif)
+
 
 ---
 
