@@ -152,7 +152,7 @@ test.cb('should be able to use multiple items mode and select many', t => {
 });
 
 // Disables clipboard tests on travis, pretty sure we can not test it there
-if (!process.env.CI) {
+if (!process.env.TRAVISTEST) {
 	test.serial.cb('should copy selected item to clipboard on --copy option', t => {
 		const prompt = ipt(t.context.p, t.context.ttys, {
 			info: () => {
