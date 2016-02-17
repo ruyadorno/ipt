@@ -1,7 +1,7 @@
 {
   "name": "ipt",
   "version": "1.0.0",
-  "description": "iPipeTo - Pipe a list in, interactively select what comes out",
+  "description": "iPipeTo - The missing shell interactive workflow",
   "repository": "ruyadorno/ipt",
   "author": {
     "name": "Ruy Adorno",
