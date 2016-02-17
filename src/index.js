@@ -19,7 +19,7 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 			'  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n' +
 			'  -m --multiple      Allows the selection of multiple items\n' +
 			'  -s --separator     Defines a separator to be used to split input into items\n' +
-			'  -n --no-copy       Do not copy selected item(s) to clipboard\n'
+			'  -c --copy          Copy selected item(s) to clipboard\n'
 		);
 		p.exit(0);
 	}
@@ -38,9 +38,7 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 	}
 
 	function onPrompt(answer) {
-		if (options['no-copy']) {
-			end(answer.stdin);
-		} else {
+		if (options.copy) {
 			try {
 				clipboard(answer.stdin, end.bind(null, answer.stdin));
 			} catch (e) {
@@ -49,6 +47,8 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 				}
 				end(answer.stdin);
 			}
+		} else {
+			end(answer.stdin);
 		}
 	}
 

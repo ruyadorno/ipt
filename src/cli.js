@@ -6,13 +6,13 @@ var fs = require('fs');
 var getStdin = require('get-stdin');
 var ttys = require('ttys');
 var argv = require('minimist')(process.argv.slice(2), {
-	boolean: ['debug', 'help', 'multiple', 'no-copy', 'version', 'no-ttys'],
+	boolean: ['debug', 'help', 'multiple', 'copy', 'version', 'no-ttys'],
 	alias: {
 		d: 'debug',
 		e: 'file-encoding',
 		h: 'help',
 		m: 'multiple',
-		n: 'no-copy',
+		c: 'copy',
 		s: 'separator',
 		v: 'version'
 	}

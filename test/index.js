@@ -8,9 +8,9 @@ import pkg from '../package.json';
 
 // Mocked deps
 const noop = function () {};
-const obj = Object.freeze({'no-copy': true});
+const obj = Object.freeze({});
 const cwd = process.cwd();
-const helpMessageOutput = '\nUsage:\n  ipt [<path>]\n\nSpecify a file <path> or pipe some data from stdin to start interacting.\n\nOptions:\n  -v --version       Displays app version number\n  -h --help          Shows this help message\n  -d --debug         Prints original node error messages to stderr on errors\n  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n  -m --multiple      Allows the selection of multiple items\n  -s --separator     Defines a separator to be used to split input into items\n  -n --no-copy       Do not copy selected item(s) to clipboard\n\n';
+const helpMessageOutput = '\nUsage:\n  ipt [<path>]\n\nSpecify a file <path> or pipe some data from stdin to start interacting.\n\nOptions:\n  -v --version       Displays app version number\n  -h --help          Shows this help message\n  -d --debug         Prints original node error messages to stderr on errors\n  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n  -m --multiple      Allows the selection of multiple items\n  -s --separator     Defines a separator to be used to split input into items\n  -c --copy          Copy selected item(s) to clipboard\n\n';
 
 function getConsoleOutput(str) {
 	const inquirerReleaseOutputCode = '\u001b[?25h';
@@ -152,8 +152,8 @@ test.cb('should be able to use multiple items mode and select many', t => {
 });
 
 // Disables clipboard tests on travis, pretty sure we can not test it there
-if (!process.env.TRAVIS) {
-	test.serial.cb('should copy selected item to clipboard', t => {
+if (!process.env.CI) {
+	test.serial.cb('should copy selected item to clipboard on --copy option', t => {
 		const prompt = ipt(t.context.p, t.context.ttys, {
 			info: () => {
 				paste((err, data) => {
@@ -164,7 +164,7 @@ if (!process.env.TRAVIS) {
 					t.end();
 				});
 			}
-		}, {}, 'foo\nbar');
+		}, {copy: true}, 'foo\nbar');
 		prompt.rl.emit('line');
 	});
 
@@ -179,7 +179,7 @@ if (!process.env.TRAVIS) {
 	});
 }
 
-test.serial.cb('should never copy items if no-copy option is active', t => {
+test.serial.cb('should never copy items if copy option is not active', t => {
 	copy('ipt is so cool', err => {
 		if (err) {
 			t.fail(err);
@@ -386,7 +386,7 @@ test.cb('should display error if provided file is not found', t => {
 
 test.serial.cb('should copy to clipboard from cli', t => {
 	let content = '';
-	let run = spawn('node', ['../src/cli.js', './fixtures/clipboard', '--no-ttys=true'], {
+	let run = spawn('node', ['../src/cli.js', './fixtures/clipboard', '--no-ttys=true', '--copy'], {
 		cwd: cwd
 	});
 	run.stdout.on('data', data => {
