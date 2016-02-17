@@ -1,7 +1,8 @@
 # iPipeTo [![NPM version](https://badge.fury.io/js/ipt.svg)](https://npmjs.org/package/ipt) [![Build Status](https://travis-ci.org/ruyadorno/ipt.svg?branch=master)](https://travis-ci.org/ruyadorno/ipt)
 
-> Interactive Pipe To
+> Interactive Pipe To: The missing shell interactive workflow
 
+![demo gif](http://i.imgur.com/0tASyP7.gifv)
 
 ## About
 
@@ -16,16 +17,35 @@ Selected data is also output to _stdout_ allowing for easily composing various w
 
 The default behavior of **ipt** is to allow for the selection of one item from the interactive list, once selected this item will be copied to your clipboard and output to _stdout_.
 
-In the example below we show a menu containing the local directories.
 
-```sh
-ls | ipt
-```
+### Using the copy to clipboard feature
+
+In the example below we show a menu containing the local directories. The selected choice gets copy to clipboard and we can reuse the selected value later with ctrl/cmd + V.
+
+![`ls | ipt` select item from menu and then `cat` followed by `cmd+v`](http://i.imgur.com/jiTgGy1.gifv)
+
+
+### Using pipes to send selected value to next command
+
+Here we get a simple list of branchs, pipe into `ipt` and pipe the selected item value to `git checkout` to checkout into the selected branch. `xargs` is needed to get the data from standard input and read it as an argument.
+
+![`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git](http://i.imgur.com/nOPBE4t.gifv)
+
+
+## Using the multiple choices option
+
+In the following example we list all the files from the folder `ls` and pipe that list into `ipt` only that this time we use the "multiple" flag `-m` that allows for selecting multiple items from a list. The selected items get piped to `trash` that deletes them.
+
+![`ls | ipt -m | xargs trash` selects multiple items from the menu and deletes them](http://i.imgur.com/iPYIfPj.gifv)
+
+We just covered some basic examples here, if you want more advanced uses, check our [Gallery](gallery.sh) below.
 
 > **iPipeTo** is the DIY kit for interactive interfaces in the command-line, plug whatever you want in, do something fun with the output!
 
 
 ## [Awesome workflow Gallery](gallery.sh)
+
+Showcases some useful predefined workflow scripts for using **iPipeTo**:
 
 ```sh
 # irm: Selects files to delete from current folder (recommended to use trash instead of rm -rf)
