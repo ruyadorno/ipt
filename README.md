@@ -32,14 +32,14 @@ Here we get a simple list of branchs, pipe into `ipt` and pipe the selected item
 ![`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git](http://i.imgur.com/nOPBE4t.gif)
 
 
-## Using the multiple choices option
+### Using the multiple choices option
 
 In the following example we list all the files from the folder `ls` and pipe that list into `ipt` only that this time we use the "multiple" flag `-m` that allows for selecting multiple items from a list. The selected items get piped to `trash` that deletes them.
 
 ![`ls | ipt -m | xargs trash` selects multiple items from the menu and deletes them](http://i.imgur.com/iPYIfPj.gif)
 
 
-## Using file as input data
+### Using file as input data
 
 You can also read a file as source of input data instead of reading from the standard input, here we read from a TODO file and redirect the selected items to be written in a DONE file.
 

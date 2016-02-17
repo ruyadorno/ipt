@@ -41,7 +41,14 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 		if (options['no-copy']) {
 			end(answer.stdin);
 		} else {
-			clipboard(answer.stdin, end.bind(null, answer.stdin));
+			try {
+				clipboard(answer.stdin, end.bind(null, answer.stdin));
+			} catch (e) {
+				if (options.debug) {
+					log.warn(e.toString());
+				}
+				end(answer.stdin);
+			}
 		}
 	}
 

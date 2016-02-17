@@ -151,30 +151,33 @@ test.cb('should be able to use multiple items mode and select many', t => {
 	prompt.rl.emit('line');
 });
 
-test.serial.cb('should copy selected item to clipboard', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: () => {
-			paste((err, data) => {
-				if (err) {
-					t.fail(err);
-				}
-				t.is(data, 'foo');
-				t.end();
-			});
-		}
-	}, {}, 'foo\nbar');
-	prompt.rl.emit('line');
-});
+// Disables clipboard tests on travis, pretty sure we can not test it there
+if (!process.env.TRAVIS) {
+	test.serial.cb('should copy selected item to clipboard', t => {
+		const prompt = ipt(t.context.p, t.context.ttys, {
+			info: () => {
+				paste((err, data) => {
+					if (err) {
+						t.fail(err);
+					}
+					t.is(data, 'foo');
+					t.end();
+				});
+			}
+		}, {}, 'foo\nbar');
+		prompt.rl.emit('line');
+	});
 
-test.serial.cb('should output correct item when using clipboard', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'foo');
-			t.end();
-		}
-	}, {}, 'foo\nbar');
-	prompt.rl.emit('line');
-});
+	test.serial.cb('should output correct item when using clipboard', t => {
+		const prompt = ipt(t.context.p, t.context.ttys, {
+			info: msg => {
+				t.is(msg, 'foo');
+				t.end();
+			}
+		}, {}, 'foo\nbar');
+		prompt.rl.emit('line');
+	});
+}
 
 test.serial.cb('should never copy items if no-copy option is active', t => {
 	copy('ipt is so cool', err => {
