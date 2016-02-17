@@ -177,28 +177,49 @@ if (!process.env.TRAVISTEST) {
 		}, {}, 'foo\nbar');
 		prompt.rl.emit('line');
 	});
-}
 
-test.serial.cb('should never copy items if copy option is not active', t => {
-	copy('ipt is so cool', err => {
-		if (err) {
-			t.fail(err);
-		}
-		const prompt = ipt(t.context.p, t.context.ttys, {
-			info: msg => {
-				t.is(msg, 'foo');
-				paste((err, data) => {
-					if (err) {
-						t.fail(err);
-					}
-					t.is(data, 'ipt is so cool');
-					t.end();
-				});
+	test.serial.cb('should never copy items if copy option is not active', t => {
+		copy('ipt is so cool', err => {
+			if (err) {
+				t.fail(err);
 			}
-		}, obj, 'foo\nbar');
-		prompt.rl.emit('line');
+			const prompt = ipt(t.context.p, t.context.ttys, {
+				info: msg => {
+					t.is(msg, 'foo');
+					paste((err, data) => {
+						if (err) {
+							t.fail(err);
+						}
+						t.is(data, 'ipt is so cool');
+						t.end();
+					});
+				}
+			}, obj, 'foo\nbar');
+			prompt.rl.emit('line');
+		});
 	});
-});
+
+	test.serial.cb('should copy to clipboard from cli', t => {
+		let content = '';
+		let run = spawn('node', ['../src/cli.js', './fixtures/clipboard', '--no-ttys=true', '--copy'], {
+			cwd: cwd
+		});
+		run.stdout.on('data', data => {
+			content += data.toString();
+		});
+		run.on('close', code => {
+			t.is(code, 0);
+			paste((err, data) => {
+				if (err) {
+					t.fail(err);
+				}
+				t.is(data, 'ipt is awesome');
+				t.end();
+			});
+		});
+		run.stdin.write('\n');
+	});
+}
 
 // --- cli integration tests
 
@@ -382,26 +403,5 @@ test.cb('should display error if provided file is not found', t => {
 		t.is(content, 'Error reading file from path\n');
 		t.end();
 	});
-});
-
-test.serial.cb('should copy to clipboard from cli', t => {
-	let content = '';
-	let run = spawn('node', ['../src/cli.js', './fixtures/clipboard', '--no-ttys=true', '--copy'], {
-		cwd: cwd
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		paste((err, data) => {
-			if (err) {
-				t.fail(err);
-			}
-			t.is(data, 'ipt is awesome');
-			t.end();
-		});
-	});
-	run.stdin.write('\n');
 });
 
