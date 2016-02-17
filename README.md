@@ -10,7 +10,7 @@
 
 Stop manually dragging your mouse around to copy output data from a terminal, using the **ipt** workflow you can pipe data from a command and select what to copy to clipboard from a convenient visual menu.
 
-Selected data is also output to _stdout_ allowing for easily composing various workflows, just create your custom alias.
+Selected data is also output to _stdout_ allowing for easily composing various workflows - Just create your custom alias!
 
 
 ## Examples

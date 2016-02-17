@@ -24,6 +24,7 @@ test.beforeEach(t => {
 	fs.writeFileSync(stdin, '');
 	fs.writeFileSync(ttyStdin, '');
 	t.context.p = {
+		on: noop,
 		exit: noop,
 		stdin: fs.createReadStream(stdin),
 		stdout: fs.createWriteStream(tempfile()),
