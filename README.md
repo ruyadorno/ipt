@@ -64,6 +64,9 @@ alias irm="ls | ipt -m -n | xargs rm -rf"
 
 # irebase: Interactive build a list of git commits from log and rebase from selected one
 alias irebase="git --no-pager log --oneline | ipt -n | cut -d ' ' -f 1 | xargs -o git rebase -i"
+
+# icheckout: Interactive git checkout a commit, similar to irebase
+alias icheckout="git --no-pager log --oneline | ipt -n | cut -d ' ' -f 1 | xargs git checkout"
 ```
 
 Got an awesome alias idea? [Send us a PR to add it to our gallery](gallery.sh)
