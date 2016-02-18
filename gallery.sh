@@ -8,3 +8,9 @@ alias irebase="git --no-pager log --oneline | ipt | cut -d ' ' -f 1 | xargs -o g
 # icheckout: Interactive git checkout a commit, similar to irebase
 alias icheckout="git --no-pager log --oneline | ipt | cut -d ' ' -f 1 | xargs git checkout"
 
+# iseek: Interactive browse folders, ctrl+c once you're done
+function iseek() {
+    cd $(ls -a -d */ -d .. | ipt)
+    iseek
+}
+
