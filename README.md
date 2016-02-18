@@ -90,7 +90,7 @@ $ npm install -g ipt
 
 _Keep in mind that you'll need to have at least **Node.js** > 0.12 installed_
 
-### Beguinners Setup
+### Beginners Setup
 
 So do you like the previous examples but are not super confident on how to configure these commands? Although I'd really recommend you to take a look at [how to do it yourself](http://askubuntu.com/questions/17536/how-do-i-create-a-permanent-bash-alias), below is a quick script for you to run in your terminal and have all of our [gallery](gallery.sh) scripts at once.
 
