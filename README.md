@@ -73,7 +73,7 @@ alias icheckout="git --no-pager log --oneline | ipt | cut -d ' ' -f 1 | xargs gi
 Got an awesome alias idea? [Send us a PR to add it to our gallery](gallery.sh)
 
 
-### Beguinners Help
+### Beginners Help
 
 > Do you love all these fancy interactions from the examples above but don't quite follow all this unix jargon? Worry not, in the Awesome Gallery just above we have some common workflow scripts pre configured to be used as simple shell commands.
 
@@ -161,4 +161,3 @@ _\* Feedback wanted to confirm which features are available on a Windows cli_
 ## License
 
 MIT © [Ruy Adorno](http://ruyadorno.com)
-
