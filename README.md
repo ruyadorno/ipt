@@ -71,7 +71,7 @@ alias icheckout="git --no-pager log --oneline | ipt | cut -d ' ' -f 1 | xargs gi
 
 # iseek: Interactive browse folders, ctrl+c once you're done
 function iseek() {
-    cd $(ls -a -d */ -d .. | ipt)
+    cd $(ls -a -d */ .. | ipt)
     iseek
 }
 ```
@@ -104,12 +104,14 @@ So do you like the previous examples but are not super confident on how to confi
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/ruyadorno/ipt/master/gallery.sh >> ~/.bash_profile
+source ~/.bash_profile
 ```
 
 #### Unix
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/ruyadorno/ipt/master/gallery.sh >> ~/.bashrc
+source ~/.bashrc
 ```
 
 
