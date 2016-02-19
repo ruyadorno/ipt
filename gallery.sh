@@ -10,7 +10,7 @@ alias icheckout="git --no-pager log --oneline | ipt | cut -d ' ' -f 1 | xargs gi
 
 # iseek: Interactive browse folders, ctrl+c once you're done
 function iseek() {
-    cd $(ls -a -d */ .. | ipt)
+    cd "$(ls -a -d */ .. | ipt)"
     iseek
 }
 
