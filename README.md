@@ -74,6 +74,9 @@ function iseek() {
     cd $(ls -a -d */ .. | ipt)
     iseek
 }
+
+# iadd: Interactive staging of selected changed files (faster than git add --patch)
+alias iadd='git status -s | sed s/^...// | ipt -m | xargs git add'
 ```
 
 Got an awesome alias idea? [Send us a PR to add it to our gallery](gallery.sh)
