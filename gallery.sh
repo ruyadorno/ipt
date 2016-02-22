@@ -14,3 +14,5 @@ function iseek() {
     iseek
 }
 
+# iadd: Interactive staging of selected changed files (faster than git add --patch)
+alias iadd='git status -s | sed s/^...// | ipt -m | xargs git add'
