@@ -4,23 +4,58 @@
 
 var fs = require('fs');
 var getStdin = require('get-stdin');
-var ttys = require('ttys');
-var argv = require('minimist')(process.argv.slice(2), {
-	boolean: ['debug', 'help', 'multiple', 'copy', 'version', 'no-ttys'],
-	alias: {
-		d: 'debug',
-		e: 'file-encoding',
-		h: 'help',
-		m: 'multiple',
-		c: 'copy',
-		s: 'separator',
-		v: 'version'
-	}
-});
+var os = require('os');
+
+var yargs = require('yargs')
+	.help()
+	.version()
+	.usage('\nUsage:\n  ipt [<path>] Specify a file <path> or pipe some data from stdin to start interacting.')
+	.options({
+		'debug': {
+			boolean: true,
+			alias: 'd',
+			description: 'Prints original node error messages to stderr on errors'
+		},
+		'multiple': {
+			boolean: true,
+			alias: 'm',
+			description: 'Allows the selection of multiple items'
+		},
+		'copy': {
+			boolean: true,
+			alias: 'c',
+			description: 'Copy selected item(s) to clipboard'
+		},
+		'separator': {
+			string: true,
+			alias: 's',
+			description: 'Defines a separator to be used to split input into items'
+		},
+		'file-encoding': {
+			string: true,
+			alias: 'e',
+			description: 'Sets a encoding to open <path> file, defaults to utf8'
+		},
+		'ttys': {
+			boolean: true,
+			default: os.platform() !== 'win32',
+			description: 'Use tty instead of process'
+		}
+	});
+var argv = yargs.argv;
+
 var filePath = argv._[0];
 
 function startIpt(input) {
-	require('./')(process, (argv['no-ttys'] ? process : ttys), console, argv, input, error);
+	if (!input) {
+		yargs.showHelp();
+		process.exit(1);
+	}
+	try {
+		require('./')(process, (argv.ttys ? require('ttys') : process), console, argv, input);
+	} catch (err) {
+		error(err, err.message);
+	}
 }
 
 function error(e, msg) {
@@ -30,7 +65,7 @@ function error(e, msg) {
 
 if (filePath) {
 	fs.readFile(filePath, {
-		encoding: argv['file-encoding'] || 'utf8'
+		encoding: argv.fileEncoding || 'utf8'
 	}, function (err, data) {
 		if (err) {
 			error(err, 'Error reading file from path');

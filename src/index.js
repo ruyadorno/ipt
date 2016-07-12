@@ -4,31 +4,9 @@ var os = require('os');
 
 var clipboard = require('copy-paste').copy;
 var inquirer = require('inquirer');
-var pkg = require('../package');
 var patchCliCursor = require('./patch-cli-cursor');
 
-module.exports = function ipt(p, ttys, log, options, input, error) {
-	function printHelp() {
-		log.info(
-			'\nUsage:\n  ipt [<path>]\n' +
-			'\nSpecify a file <path> or pipe some data from stdin to start interacting.\n' +
-			'\nOptions:\n' +
-			'  -v --version       Displays app version number\n' +
-			'  -h --help          Shows this help message\n' +
-			'  -d --debug         Prints original node error messages to stderr on errors\n' +
-			'  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n' +
-			'  -m --multiple      Allows the selection of multiple items\n' +
-			'  -s --separator     Defines a separator to be used to split input into items\n' +
-			'  -c --copy          Copy selected item(s) to clipboard\n'
-		);
-		p.exit(0);
-	}
-
-	function printVersion() {
-		log.info(pkg.version);
-		p.exit(0);
-	}
-
+module.exports = function ipt(p, ttys, log, options, input) {
 	function end(data) {
 		if (!Array.isArray(data)) {
 			data = [data];
@@ -116,17 +94,15 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 		);
 	}
 
-	if (options.help) {
-		printHelp();
-	} else if (options.version) {
-		printVersion();
-	} else if (!input) {
-		printHelp();
+	if (!input) {
+		throw new Error('Input is missing');
 	} else {
 		try {
 			return showList();
 		} catch (err) {
-			error(err, 'An error occurred while building the interactive interface');
+			var err2 = new Error('An error occurred while building the interactive interface');
+			err2.subError = err;
+			throw err2;
 		}
 	}
 };

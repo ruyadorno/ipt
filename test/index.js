@@ -4,13 +4,11 @@ import tempfile from 'tempfile';
 import {spawn} from 'child_process';
 import {copy, paste} from 'copy-paste';
 import ipt from '../src';
-import pkg from '../package.json';
 
 // Mocked deps
 const noop = function () {};
 const obj = Object.freeze({});
 const cwd = process.cwd();
-const helpMessageOutput = '\nUsage:\n  ipt [<path>]\n\nSpecify a file <path> or pipe some data from stdin to start interacting.\n\nOptions:\n  -v --version       Displays app version number\n  -h --help          Shows this help message\n  -d --debug         Prints original node error messages to stderr on errors\n  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n  -m --multiple      Allows the selection of multiple items\n  -s --separator     Defines a separator to be used to split input into items\n  -c --copy          Copy selected item(s) to clipboard\n\n';
 
 function getConsoleOutput(str) {
 	const inquirerReleaseOutputCode = '\u001b[?25h';
@@ -39,33 +37,6 @@ test.beforeEach(t => {
 test.afterEach(t => {
 	t.context.p = null;
 	t.context.ttys = null;
-});
-
-test.cb('should display help message if no input provided', t => {
-	ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg.slice(0, 23), '\nUsage:\n  ipt [<path>]\n');
-			t.end();
-		}
-	}, obj);
-});
-
-test.cb('should display help message on help option', t => {
-	ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg.slice(0, 23), '\nUsage:\n  ipt [<path>]\n');
-			t.end();
-		}
-	}, Object.assign({}, obj, {help: true}));
-});
-
-test.cb('should display version number', t => {
-	ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, pkg.version.toString());
-			t.end();
-		}
-	}, Object.assign({}, {version: true}));
 });
 
 test.cb('should build and select items from a basic list', t => {
@@ -296,57 +267,6 @@ test.cb('should run other different encoding using --file-encoding option', t =>
 		t.end();
 	});
 	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should display help message on --help', t => {
-	let content = '';
-	let run = spawn('node', ['../src/cli.js', './fixtures/simpletest', '--no-ttys=true', '-n', '--help'], {
-		cwd: cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, helpMessageOutput);
-		t.end();
-	});
-	run.stdin.end();
-});
-
-test.cb('should display help message on empty invocation', t => {
-	let content = '';
-	let run = spawn('node', ['../src/cli.js'], {
-		cwd: cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, helpMessageOutput);
-		t.end();
-	});
-	run.stdin.end();
-});
-
-test.cb('should display version on --version', t => {
-	let content = '';
-	let run = spawn('node', ['../src/cli.js', './fixtures/simpletest', '--no-ttys=true', '-n', '--version'], {
-		cwd: cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, pkg.version.toString() + '\n');
-		t.end();
-	});
 	run.stdin.end();
 });
 
