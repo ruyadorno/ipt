@@ -33,6 +33,7 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 		if (!Array.isArray(data)) {
 			data = [data];
 		}
+		data = data.map(item => item.indexOf(' ') >= 0 ? `"${item}"` : item);
 		log.info(data.join(os.EOL));
 		p.exit(0);
 	}

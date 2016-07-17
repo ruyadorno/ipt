@@ -405,3 +405,19 @@ test.cb('should display error if provided file is not found', t => {
 	});
 });
 
+test.cb('should quote result args with white space', t => {
+	let content = '';
+	let run = spawn('node', ['../src/cli.js', './fixtures/white space', '--no-ttys=true', '-n'], {
+		cwd: cwd
+	});
+	run.stdout.on('data', data => {
+		content += data.toString();
+	});
+	run.on('close', code => {
+		t.is(code, 0);
+		t.is(getConsoleOutput(content), '"white space"\n');
+		t.end();
+	});
+	run.stdin.write('\n');
+	run.stdin.end();
+});
