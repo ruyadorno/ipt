@@ -19,7 +19,8 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 			'  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n' +
 			'  -m --multiple      Allows the selection of multiple items\n' +
 			'  -s --separator     Defines a separator to be used to split input into items\n' +
-			'  -c --copy          Copy selected item(s) to clipboard\n'
+			'  -c --copy          Copy selected item(s) to clipboard\n' +
+			'  --unquoted         Force the output to be unquoted\n'
 		);
 		p.exit(0);
 	}
@@ -33,23 +34,32 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 		if (!Array.isArray(data)) {
 			data = [data];
 		}
-		data = data.map(item => item.indexOf(' ') >= 0 ? `"${item}"` : item);
 		log.info(data.join(os.EOL));
 		p.exit(0);
 	}
 
+	function formatResult(str) {
+		if (options.unquoted) {
+			return str;
+		}
+
+		return str.indexOf(' ') >= 0 ? `"${str}"` : str;
+	}
+
 	function onPrompt(answer) {
+		var result = typeof answer.stdin === 'string' ? formatResult(answer.stdin) : answer.stdin.map(formatResult);
+
 		if (options.copy) {
 			try {
-				clipboard(answer.stdin, end.bind(null, answer.stdin));
+				clipboard(result, end.bind(null, result));
 			} catch (e) {
 				if (options.debug) {
 					log.warn(e.toString());
 				}
-				end(answer.stdin);
+				end(result);
 			}
 		} else {
-			end(answer.stdin);
+			end(result);
 		}
 	}
 

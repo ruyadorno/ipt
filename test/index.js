@@ -10,7 +10,7 @@ import pkg from '../package.json';
 const noop = function () {};
 const obj = Object.freeze({});
 const cwd = process.cwd();
-const helpMessageOutput = '\nUsage:\n  ipt [<path>]\n\nSpecify a file <path> or pipe some data from stdin to start interacting.\n\nOptions:\n  -v --version       Displays app version number\n  -h --help          Shows this help message\n  -d --debug         Prints original node error messages to stderr on errors\n  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n  -m --multiple      Allows the selection of multiple items\n  -s --separator     Defines a separator to be used to split input into items\n  -c --copy          Copy selected item(s) to clipboard\n\n';
+const helpMessageOutput = '\nUsage:\n  ipt [<path>]\n\nSpecify a file <path> or pipe some data from stdin to start interacting.\n\nOptions:\n  -v --version       Displays app version number\n  -h --help          Shows this help message\n  -d --debug         Prints original node error messages to stderr on errors\n  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n  -m --multiple      Allows the selection of multiple items\n  -s --separator     Defines a separator to be used to split input into items\n  -c --copy          Copy selected item(s) to clipboard\n  --unquoted         Force the output to be unquoted\n\n';
 
 function getConsoleOutput(str) {
 	const inquirerReleaseOutputCode = '\u001b[?25h';
@@ -201,7 +201,7 @@ if (!process.env.TRAVISTEST) {
 
 	test.serial.cb('should copy to clipboard from cli', t => {
 		let content = '';
-		let run = spawn('node', ['../src/cli.js', './fixtures/clipboard', '--no-ttys=true', '--copy'], {
+		let run = spawn('node', ['../src/cli.js', './fixtures/clipboard', '--no-ttys=true', '--copy', '--unquoted'], {
 			cwd: cwd
 		});
 		run.stdout.on('data', data => {
