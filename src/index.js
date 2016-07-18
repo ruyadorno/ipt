@@ -43,11 +43,13 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 			return str;
 		}
 
-		return str.indexOf(' ') >= 0 ? `"${str}"` : str;
+		return str.indexOf(' ') >= 0 ? '"' + str + '"' : str;
 	}
 
 	function onPrompt(answer) {
-		var result = typeof answer.stdin === 'string' ? formatResult(answer.stdin) : answer.stdin.map(formatResult);
+		var result = typeof answer.stdin === 'string' ?
+			formatResult(answer.stdin) :
+			answer.stdin.map(formatResult);
 
 		if (options.copy) {
 			try {
