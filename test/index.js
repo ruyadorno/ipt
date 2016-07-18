@@ -421,3 +421,20 @@ test.cb('should quote result args with white space', t => {
 	run.stdin.write('\n');
 	run.stdin.end();
 });
+
+test.cb('should not quote result args with white space if --unquoted option is given', t => {
+	let content = '';
+	let run = spawn('node', ['../src/cli.js', './fixtures/white space', '--no-ttys=true', '-n', '--unquoted'], {
+		cwd: cwd
+	});
+	run.stdout.on('data', data => {
+		content += data.toString();
+	});
+	run.on('close', code => {
+		t.is(code, 0);
+		t.is(getConsoleOutput(content), 'white space\n');
+		t.end();
+	});
+	run.stdin.write('\n');
+	run.stdin.end();
+});
