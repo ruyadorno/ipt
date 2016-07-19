@@ -133,7 +133,8 @@ Options:
   -e --file-encoding Sets a encoding to open <path> file, defaults to utf8
   -m --multiple      Allows the selection of multiple items
   -s --separator     Defines a separator to be used to split input into items
-  -c --copy       Do not copy selected item(s) to clipboard
+  -c --copy          Do not copy selected item(s) to clipboard
+  --unquoted         Force the output to be unquoted
 ```
 
 
