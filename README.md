@@ -160,6 +160,14 @@ _\* Feedback wanted to confirm which features are available on a Windows cli_
 **Bug fixes / code changes**: Please provide tests covering your changes, update docs accordingly and keep your changes to a single commit.
 
 
+## Alternatives
+
+As in any cool idea, iPipeTo is not the only available choice, here are some other cool implementations found in the wild:
+
+- [percol](https://github.com/mooz/percol)
+- [sentaku](https://github.com/rcmdnk/sentaku)
+
+
 ## Credits
 
 **iPipeTo** wouldn't be possible if not for the amazing [Inquirer.js](https://github.com/SBoudrias/Inquirer.js) that provides all these sweet interactive interfaces.
