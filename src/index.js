@@ -20,6 +20,7 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 			'  -m --multiple      Allows the selection of multiple items\n' +
 			'  -s --separator     Defines a separator to be used to split input into items\n' +
 			'  -c --copy          Copy selected item(s) to clipboard\n' +
+			'  -t --no-trim       Prevents trimming of the result strings\n' +
 			'  --unquoted         Force the output to be unquoted\n'
 		);
 		p.exit(0);
@@ -39,7 +40,9 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 	}
 
 	function formatResult(str) {
-		str = str.trim();
+		if (!options['no-trim']) {
+			str = str.trim();
+		}
 
 		if (options.unquoted) {
 			return str;
