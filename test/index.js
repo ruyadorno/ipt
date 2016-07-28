@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import test from 'ava';
 import tempfile from 'tempfile';
 import {spawn} from 'child_process';
@@ -10,7 +11,7 @@ import pkg from '../package.json';
 const noop = function () {};
 const obj = Object.freeze({});
 const cwd = process.cwd();
-const helpMessageOutput = '\nUsage:\n  ipt [<path>]\n\nSpecify a file <path> or pipe some data from stdin to start interacting.\n\nOptions:\n  -v --version       Displays app version number\n  -h --help          Shows this help message\n  -d --debug         Prints original node error messages to stderr on errors\n  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n  -m --multiple      Allows the selection of multiple items\n  -s --separator     Defines a separator to be used to split input into items\n  -c --copy          Copy selected item(s) to clipboard\n  --unquoted         Force the output to be unquoted\n\n';
+const helpMessageOutput = fs.readFileSync(path.join(__dirname, 'fixtures', 'help'), {encoding: 'utf8'});
 
 function getConsoleOutput(str) {
 	const inquirerReleaseOutputCode = '\u001b[?25h';

@@ -1,0 +1,17 @@
+
+Usage:
+  ipt [<path>]
+
+Specify a file <path> or pipe some data from stdin to start interacting.
+
+Options:
+  -v --version       Displays app version number
+  -h --help          Shows this help message
+  -d --debug         Prints original node error messages to stderr on errors
+  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8
+  -m --multiple      Allows the selection of multiple items
+  -s --separator     Defines a separator to be used to split input into items
+  -c --copy          Copy selected item(s) to clipboard
+  -t --no-trim       Prevents trimming of the result strings
+  --unquoted         Force the output to be unquoted
+
