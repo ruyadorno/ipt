@@ -39,6 +39,8 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 	}
 
 	function formatResult(str) {
+		str = str.trim();
+
 		if (options.unquoted) {
 			return str;
 		}
