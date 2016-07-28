@@ -166,6 +166,20 @@ test.cb('should trim each outputed line', t => {
 	prompt.rl.emit('line');
 });
 
+test.cb('should not trim result when using option', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		info: msg => {
+			t.is(msg, '"  foo"\n"  lorem"');
+			t.end();
+		}
+	}, Object.assign({}, obj, {multiple: true, 'no-trim': true}), '  foo\n  bar\n  lorem\n  ipsum'); // eslint-disable-line quote-props
+	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
+	prompt.rl.input.emit('keypress', null, {name: 'down'});
+	prompt.rl.input.emit('keypress', null, {name: 'down'});
+	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
+	prompt.rl.emit('line');
+});
+
 // Disables clipboard tests on travis, pretty sure we can not test it there
 if (!process.env.TRAVISTEST) {
 	test.serial.cb('should copy selected item to clipboard on --copy option', t => {
