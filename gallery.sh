@@ -16,3 +16,6 @@ function iseek() {
 
 # iadd: Interactive staging of selected changed files (faster than git add --patch)
 alias iadd='git status -s | sed s/^...// | ipt -m | xargs git add'
+
+# Choose one git stash to show.
+alias git-stash-show='git stash show $(git stash list | ipt | sed "s/\([^:]*\).*/\1/") -u'
