@@ -20,6 +20,13 @@ var argv = require('minimist')(process.argv.slice(2), {
 });
 var filePath = argv._[0];
 
+// Exits program execution on ESC or q keypress
+process.stdin.on('keypress', function (ch, key) {
+	if (key && (key.name === 'escape' || key.name === 'q')) {
+		process.exit();
+	}
+});
+
 function startIpt(input) {
 	require('./')(process, (argv['no-ttys'] ? process : ttys), console, argv, input, error);
 }
@@ -46,4 +53,3 @@ if (filePath) {
 		error(err, 'Error while reading stdin');
 	});
 }
-
