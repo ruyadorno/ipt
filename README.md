@@ -166,6 +166,7 @@ As in any cool idea, iPipeTo is not the only available choice, here are some oth
 
 - [percol](https://github.com/mooz/percol)
 - [sentaku](https://github.com/rcmdnk/sentaku)
+- [pick](https://github.com/calleerlandsson/pick)
 
 
 ## Credits
