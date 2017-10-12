@@ -128,10 +128,13 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 				choices: promptChoices
 			}
 		};
-		return prompt(
-			options.multiple ? promptTypes.multiple : promptTypes.base,
-			onPrompt
+		var result = prompt(
+			options.multiple ? promptTypes.multiple : promptTypes.base
 		);
+		result
+			.then(onPrompt)
+			.catch(onForcedExit);
+		return result.ui;
 	}
 
 	if (options.help) {
