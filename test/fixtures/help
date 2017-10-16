@@ -1,12 +1,13 @@
 
 Usage:
-  ipt [<path>]
+  ipt [options] [<path>]
 
 Specify a file <path> or pipe some data from stdin to start interacting.
 
 Options:
   -v --version       Displays app version number
   -h --help          Shows this help message
+  -a --autocomplete  Starts interactive selection in autocomplete mode
   -d --debug         Prints original node error messages to stderr on errors
   -e --file-encoding Sets a encoding to open <path> file, defaults to utf8
   -m --multiple      Allows the selection of multiple items

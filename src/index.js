@@ -6,15 +6,18 @@ var clipboard = require('copy-paste').copy;
 var inquirer = require('inquirer');
 var pkg = require('../package');
 var patchCliCursor = require('./patch-cli-cursor');
+var Promise = require('pinkie-promise');
+var fuzzysearch = require('fuzzysearch');
 
 module.exports = function ipt(p, ttys, log, options, input, error) {
 	function printHelp() {
 		log.info(
-			'\nUsage:\n  ipt [<path>]\n' +
+			'\nUsage:\n  ipt [options] [<path>]\n' +
 			'\nSpecify a file <path> or pipe some data from stdin to start interacting.\n' +
 			'\nOptions:\n' +
 			'  -v --version       Displays app version number\n' +
 			'  -h --help          Shows this help message\n' +
+			'  -a --autocomplete  Starts interactive selection in autocomplete mode\n' +
 			'  -d --debug         Prints original node error messages to stderr on errors\n' +
 			'  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n' +
 			'  -m --multiple      Allows the selection of multiple items\n' +
@@ -102,6 +105,11 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 			input: ttys.stdin,
 			output: ttys.stdout
 		});
+
+		if (options.autocomplete) {
+			prompt.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt-ipt'));
+		}
+
 		var promptChoices = input.split(options.separator || os.EOL)
 			.filter(function (item) {
 				return item;
@@ -126,10 +134,26 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 				name: 'stdin',
 				message: 'Select multiple items:',
 				choices: promptChoices
+			},
+			autocomplete: {
+				type: 'autocomplete',
+				name: 'stdin',
+				message: 'Select an item:',
+				choices: promptChoices,
+				source: function (answer, input) {
+					input = input || '';
+					return new Promise(function (resolve) {
+						resolve(promptChoices.filter(function (item) {
+							return fuzzysearch(input.toLowerCase(), item.value.toLowerCase());
+						}));
+					});
+				}
 			}
 		};
 		var result = prompt(
-			options.multiple ? promptTypes.multiple : promptTypes.base
+			(options.multiple && promptTypes.multiple) ||
+			(options.autocomplete && promptTypes.autocomplete) ||
+			promptTypes.base
 		);
 		result
 			.then(onPrompt)
