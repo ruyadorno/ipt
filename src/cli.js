@@ -6,8 +6,18 @@ var fs = require('fs');
 var getStdin = require('get-stdin');
 var ttys = require('ttys');
 var argv = require('minimist')(process.argv.slice(2), {
-	boolean: ['debug', 'help', 'multiple', 'copy', 'version', 'no-ttys', 'no-trim'],
+	boolean: [
+		'autocomplete',
+		'debug',
+		'help',
+		'multiple',
+		'copy',
+		'version',
+		'no-ttys',
+		'no-trim'
+	],
 	alias: {
+		a: 'autocomplete',
 		d: 'debug',
 		e: 'file-encoding',
 		h: 'help',

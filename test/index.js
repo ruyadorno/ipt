@@ -45,7 +45,7 @@ test.afterEach(t => {
 test.cb('should display help message if no input provided', t => {
 	ipt(t.context.p, t.context.ttys, {
 		info: msg => {
-			t.is(msg.slice(0, 23), '\nUsage:\n  ipt [<path>]\n');
+			t.is(msg.slice(0, 33), '\nUsage:\n  ipt [options] [<path>]\n');
 			t.end();
 		}
 	}, obj);
@@ -54,7 +54,7 @@ test.cb('should display help message if no input provided', t => {
 test.cb('should display help message on help option', t => {
 	ipt(t.context.p, t.context.ttys, {
 		info: msg => {
-			t.is(msg.slice(0, 23), '\nUsage:\n  ipt [<path>]\n');
+			t.is(msg.slice(0, 33), '\nUsage:\n  ipt [options] [<path>]\n');
 			t.end();
 		}
 	}, Object.assign({}, obj, {help: true}));
@@ -178,6 +178,40 @@ test.cb('should not trim result when using option', t => {
 	prompt.rl.input.emit('keypress', null, {name: 'down'});
 	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
 	prompt.rl.emit('line');
+});
+
+test.cb('should be able to use autocomplete interface', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		info: msg => {
+			t.is(msg, 'lorem');
+			t.end();
+		}
+	}, Object.assign({}, obj, {autocomplete: true}), 'foo\nbar\nlorem\nipsum');
+	prompt.rl.input.emit('keypress', 'l');
+});
+
+test.cb('should be able to use autocomplete interface case insensitive', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		info: msg => {
+			t.is(msg, 'LOREM');
+			t.end();
+		}
+	}, Object.assign({}, obj, {autocomplete: true}), 'foo\nbar\nLOREM\nipsum');
+	prompt.rl.input.emit('keypress', 'l');
+});
+
+test.cb('should be able to use autocomplete interface typing complete word', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		info: msg => {
+			t.is(msg, 'ipsum');
+			t.end();
+		}
+	}, Object.assign({}, obj, {autocomplete: true}), 'foo\nbar\nLOREM\nipsum');
+	prompt.rl.input.emit('keypress', 'i');
+	prompt.rl.input.emit('keypress', 'p');
+	prompt.rl.input.emit('keypress', 's');
+	prompt.rl.input.emit('keypress', 'u');
+	prompt.rl.input.emit('keypress', 'm');
 });
 
 // Disables clipboard tests on travis, pretty sure we can not test it there
@@ -467,3 +501,27 @@ test.cb('should not quote result args with white space if --unquoted option is g
 	run.stdin.write('\n');
 	run.stdin.end();
 });
+
+test.cb('should run in autocomplete mode from cli', t => {
+	let content = '';
+	let run = spawn('node', ['../src/cli.js', './fixtures/simpletest', '--no-ttys=true', '-n', '-a'], {
+		cwd: cwd,
+		stdio: ['pipe', 'pipe', 'inherit']
+	});
+	run.stdout.on('data', data => {
+		if (data) {
+			content = data.toString();
+		}
+	});
+	run.on('close', code => {
+		t.is(code, 0);
+		t.is(content, 'lorem\n');
+		t.end();
+	});
+	run.stdin.write('l');
+	run.stdin.write('o');
+	run.stdin.write('r');
+	run.stdin.write('\n');
+	run.stdin.end();
+});
+
