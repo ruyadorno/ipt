@@ -18,4 +18,4 @@ function iseek() {
 alias iadd='git status -s | sed s/^...// | ipt -m | xargs git add'
 
 # Choose one git stash to show.
-alias git-stash-show='git stash show $(git stash list | ipt | sed "s/\([^:]*\).*/\1/") -u'
+alias ishow="git stash list | ipt --unquoted | cut -d ':' -f 1 | xargs git stash show -u"

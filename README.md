@@ -13,6 +13,11 @@ Stop manually dragging your mouse around to copy output data from a terminal, us
 Selected data is also output to _stdout_ allowing for easily composing various workflows - Just create your custom alias!
 
 
+## :newspaper: News
+
+- **v1.1.0:** Added autocomplete (or fuzzy finder) mode `ipt -a`
+
+
 ## Examples
 
 The default behavior of **ipt** is to allow for the selection of one item from the interactive list, once selected this item will be output to _stdout_, you can also use `-c` option to copy the result to your clipboard.
@@ -77,6 +82,9 @@ function iseek() {
 
 # iadd: Interactive staging of selected changed files (faster than git add --patch)
 alias iadd='git status -s | sed s/^...// | ipt -m | xargs git add'
+
+# Choose one git stash to show.
+alias ishow="git stash list | ipt --unquoted | cut -d ':' -f 1 | xargs git stash show -u"
 ```
 
 Got an awesome alias idea? [Send us a PR to add it to our gallery](gallery.sh)
@@ -122,18 +130,20 @@ source ~/.bashrc
 
 ```sh
 Usage:
-  ipt [<path>]
+  ipt [options] [<path>]
 
 Specify a file <path> or pipe some data from stdin to start interacting.
 
 Options:
   -v --version       Displays app version number
   -h --help          Shows this help message
+  -a --autocomplete  Starts interactive selection in autocomplete mode
   -d --debug         Prints original node error messages to stderr on errors
   -e --file-encoding Sets a encoding to open <path> file, defaults to utf8
   -m --multiple      Allows the selection of multiple items
   -s --separator     Defines a separator to be used to split input into items
   -c --copy          Do not copy selected item(s) to clipboard
+  -t --no-trim       Prevents trimming of the result strings
   --unquoted         Force the output to be unquoted
 ```
 
