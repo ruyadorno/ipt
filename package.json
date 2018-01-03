@@ -9,7 +9,7 @@
   },
   "bin": "src/cli.js",
   "engines": {
-    "node": ">=0.12.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "pretest": "xo",
