@@ -37,7 +37,7 @@
     "fuzzysearch": "^1.0.3",
     "get-stdin": "^5.0.1",
     "inquirer": "^4.0.2",
-    "inquirer-autocomplete-prompt-ipt": "^1.0.1",
+    "inquirer-autocomplete-prompt": "^0.12.1",
     "minimist": "^1.2.0",
     "pinkie-promise": "^2.0.1",
     "ttys": "0.0.3"
