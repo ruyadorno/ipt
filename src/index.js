@@ -105,7 +105,7 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 		});
 
 		if (options.autocomplete) {
-			prompt.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt-ipt'));
+			prompt.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 		}
 
 		var promptChoices = input.split(options.separator || os.EOL)
