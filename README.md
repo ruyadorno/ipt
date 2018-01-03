@@ -105,7 +105,7 @@ Install it easily using **npm**:
 $ npm install -g ipt
 ```
 
-_Keep in mind that you'll need to have at least **Node.js** > 0.12 installed_
+_Keep in mind that you'll need the latest **Node.js** LTS installed_
 
 ### Beginners Setup
 
