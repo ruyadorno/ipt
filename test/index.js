@@ -13,9 +13,8 @@ const obj = Object.freeze({});
 const cwd = process.cwd();
 const helpMessageOutput = fs.readFileSync(path.join(__dirname, 'fixtures', 'help'), {encoding: 'utf8'});
 
-function getConsoleOutput(str) {
-	const inquirerReleaseOutputCode = '\u001b[?25h';
-	return str.split(inquirerReleaseOutputCode)[1];
+function testConsoleOutput(t, output, expected) {
+	t.is(output.substr(-expected.length), expected);
 }
 
 // Mocks some context
@@ -297,7 +296,7 @@ test.cb('should run from cli', t => {
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), 'foo\n');
+		testConsoleOutput(t, content, 'foo\n');
 		t.end();
 	});
 	run.stdin.write('\n');
@@ -315,7 +314,7 @@ test.cb('should run using multiple from cli', t => {
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), 'foo\nlorem\n');
+		testConsoleOutput(t, content, 'foo\nlorem\n');
 		t.end();
 	});
 	run.stdin.write(' ');
@@ -337,7 +336,7 @@ test.cb('should run different encoding using --file-encoding option', t => {
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), 'foo\n');
+		testConsoleOutput(t, content, 'foo\n');
 		t.end();
 	});
 	run.stdin.write('\n');
@@ -355,7 +354,7 @@ test.cb('should run other different encoding using --file-encoding option', t =>
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), 'lorem\n');
+		testConsoleOutput(t, content, 'lorem\n');
 		t.end();
 	});
 	run.stdin.write('\n');
@@ -424,7 +423,7 @@ test.cb('should be able to use custom separators with --separator', t => {
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), 'oranges\n');
+		testConsoleOutput(t, content, 'oranges\n');
 		t.end();
 	});
 	run.stdin.write('j');
@@ -444,7 +443,7 @@ test.cb('should be able to use different separators with --separator', t => {
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), 'bar\n');
+		testConsoleOutput(t, content, 'bar\n');
 		t.end();
 	});
 	run.stdin.write('j');
@@ -478,7 +477,7 @@ test.cb('should quote result args with white space', t => {
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), '"white space"\n');
+		testConsoleOutput(t, content, '"white space"\n');
 		t.end();
 	});
 	run.stdin.write('\n');
@@ -495,7 +494,7 @@ test.cb('should not quote result args with white space if --unquoted option is g
 	});
 	run.on('close', code => {
 		t.is(code, 0);
-		t.is(getConsoleOutput(content), 'white space\n');
+		testConsoleOutput(t, content, 'white space\n');
 		t.end();
 	});
 	run.stdin.write('\n');
