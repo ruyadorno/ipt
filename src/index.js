@@ -5,7 +5,6 @@ var os = require('os');
 var clipboard = require('copy-paste').copy;
 var inquirer = require('inquirer');
 var pkg = require('../package');
-var patchCliCursor = require('./patch-cli-cursor');
 var Promise = require('pinkie-promise');
 var fuzzysearch = require('fuzzysearch');
 
@@ -98,7 +97,6 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 	}
 
 	function showList() {
-		patchCliCursor(p, ttys);
 		defineErrorHandlers();
 
 		var prompt = inquirer.createPromptModule({
