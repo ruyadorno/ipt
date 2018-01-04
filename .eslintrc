@@ -1,4 +1,4 @@
 {
-    "extends": "xo"
+    "extends": "xo/esnext"
 }
 

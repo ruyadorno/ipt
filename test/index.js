@@ -1,11 +1,13 @@
 import fs from 'fs';
 import path from 'path';
+import {spawn} from 'child_process';
+
 import test from 'ava';
 import tempfile from 'tempfile';
-import {spawn} from 'child_process';
 import {copy, paste} from 'copy-paste';
+
 import ipt from '../src';
-import pkg from '../package.json';
+import pkg from '../package';
 
 // Mocked deps
 const noop = function () {};
@@ -101,14 +103,14 @@ test.cb('should successful exit on basic usage', t => {
 });
 
 test.cb('should print error message when encounter problems', t => {
-	ipt(t.context.p, t.context.ttys, {info: noop}, obj, new Buffer('jjj'), (e, msg) => {
+	ipt(t.context.p, t.context.ttys, {info: noop}, obj, Buffer.from('jjj'), (e, msg) => {
 		t.is(msg, 'An error occurred while building the interactive interface');
 		t.end();
 	});
 });
 
 test.cb('should print original error message when debug option', t => {
-	ipt(t.context.p, t.context.ttys, {info: noop}, Object.assign({}, obj, {debug: true}), new Buffer('jjj'), e => {
+	ipt(t.context.p, t.context.ttys, {info: noop}, Object.assign({}, obj, {debug: true}), Buffer.from('jjj'), e => {
 		t.is(e.name, 'TypeError');
 		t.end();
 	});
@@ -262,12 +264,8 @@ if (!process.env.TRAVISTEST) {
 	});
 
 	test.serial.cb('should copy to clipboard from cli', t => {
-		let content = '';
-		let run = spawn('node', ['./src/cli.js', './test/fixtures/clipboard', '--no-ttys=true', '--copy', '--unquoted'], {
-			cwd: cwd
-		});
-		run.stdout.on('data', data => {
-			content += data.toString();
+		const run = spawn('node', ['./src/cli.js', './test/fixtures/clipboard', '--no-ttys=true', '--copy', '--unquoted'], {
+			cwd
 		});
 		run.on('close', code => {
 			t.is(code, 0);
@@ -287,8 +285,8 @@ if (!process.env.TRAVISTEST) {
 
 test.cb('should run from cli', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -305,8 +303,8 @@ test.cb('should run from cli', t => {
 
 test.cb('should run using multiple from cli', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-m'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-m'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -327,8 +325,8 @@ test.cb('should run using multiple from cli', t => {
 
 test.cb('should run different encoding using --file-encoding option', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/asciiencode', '--no-ttys=true', '-n', '--file-encoding=ascii'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/asciiencode', '--no-ttys=true', '-n', '--file-encoding=ascii'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -345,8 +343,8 @@ test.cb('should run different encoding using --file-encoding option', t => {
 
 test.cb('should run other different encoding using --file-encoding option', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/utf16encode', '--no-ttys=true', '-n', '--file-encoding=utf16le'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/utf16encode', '--no-ttys=true', '-n', '--file-encoding=utf16le'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -363,8 +361,8 @@ test.cb('should run other different encoding using --file-encoding option', t =>
 
 test.cb('should display help message on --help', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--help'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--help'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -380,8 +378,8 @@ test.cb('should display help message on --help', t => {
 
 test.cb('should display help message on empty invocation', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -397,8 +395,8 @@ test.cb('should display help message on empty invocation', t => {
 
 test.cb('should display version on --version', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--version'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--version'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -414,8 +412,8 @@ test.cb('should display version on --version', t => {
 
 test.cb('should be able to use custom separators with --separator', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/test.csv', '--no-ttys=true', '-n', '--separator=,'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/test.csv', '--no-ttys=true', '-n', '--separator=,'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -434,8 +432,8 @@ test.cb('should be able to use custom separators with --separator', t => {
 
 test.cb('should be able to use different separators with --separator', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/customseparators', '--no-ttys=true', '-n', '--separator=:'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/customseparators', '--no-ttys=true', '-n', '--separator=:'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {
@@ -454,8 +452,8 @@ test.cb('should be able to use different separators with --separator', t => {
 
 test.cb('should display error if provided file is not found', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/inexistentfilename', '--no-ttys=true', '-n'], {
-		cwd: cwd
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/inexistentfilename', '--no-ttys=true', '-n'], {
+		cwd
 	});
 	run.stderr.on('data', data => {
 		content += data.toString();
@@ -469,8 +467,8 @@ test.cb('should display error if provided file is not found', t => {
 
 test.cb('should quote result args with white space', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n'], {
-		cwd: cwd
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n'], {
+		cwd
 	});
 	run.stdout.on('data', data => {
 		content += data.toString();
@@ -486,8 +484,8 @@ test.cb('should quote result args with white space', t => {
 
 test.cb('should not quote result args with white space if --unquoted option is given', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n', '--unquoted'], {
-		cwd: cwd
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n', '--unquoted'], {
+		cwd
 	});
 	run.stdout.on('data', data => {
 		content += data.toString();
@@ -503,8 +501,8 @@ test.cb('should not quote result args with white space if --unquoted option is g
 
 test.cb('should run in autocomplete mode from cli', t => {
 	let content = '';
-	let run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-a'], {
-		cwd: cwd,
+	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-a'], {
+		cwd,
 		stdio: ['pipe', 'pipe', 'inherit']
 	});
 	run.stdout.on('data', data => {

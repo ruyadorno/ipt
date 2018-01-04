@@ -2,10 +2,10 @@
 
 'use strict';
 
-var fs = require('fs');
-var getStdin = require('get-stdin');
-var ttys = require('ttys');
-var argv = require('minimist')(process.argv.slice(2), {
+const fs = require('fs');
+const getStdin = require('get-stdin');
+const ttys = require('ttys');
+const argv = require('minimist')(process.argv.slice(2), {
 	boolean: [
 		'autocomplete',
 		'debug',
@@ -28,10 +28,11 @@ var argv = require('minimist')(process.argv.slice(2), {
 		v: 'version'
 	}
 });
-var filePath = argv._[0];
+
+const filePath = argv._[0];
 
 // Exits program execution on ESC or q keypress
-process.stdin.on('keypress', function (ch, key) {
+process.stdin.on('keypress', (ch, key) => {
 	if (key && (key.name === 'escape' || key.name === 'q')) {
 		process.exit();
 	}
@@ -49,7 +50,7 @@ function error(e, msg) {
 if (filePath) {
 	fs.readFile(filePath, {
 		encoding: argv['file-encoding'] || 'utf8'
-	}, function (err, data) {
+	}, (err, data) => {
 		if (err) {
 			error(err, 'Error reading file from path');
 		} else {
@@ -57,9 +58,9 @@ if (filePath) {
 		}
 	});
 } else {
-	getStdin().then(function (data) {
+	getStdin().then(data => {
 		startIpt(data);
-	}).catch(function (err) {
+	}).catch(err => {
 		error(err, 'Error while reading stdin');
 	});
 }
