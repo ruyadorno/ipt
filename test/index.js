@@ -1,13 +1,30 @@
-import fs from 'fs';
-import path from 'path';
-import {spawn} from 'child_process';
+'use strict';
 
-import test from 'ava';
-import tempfile from 'tempfile';
-import {copy, paste} from 'copy-paste';
+const fs = require('fs');
+const path = require('path');
+const {spawn} = require('child_process');
 
-import ipt from '../src';
-import pkg from '../package';
+const mock = require('mock-require');
+const test = require('ava');
+const tempfile = require('tempfile');
+
+// Mock clipboard on CI builds
+let clipboard = {
+	value: ''
+};
+clipboard.write = val => {
+	clipboard.value = val;
+	return Promise.resolve();
+};
+clipboard.read = () => Promise.resolve(clipboard.value);
+if (process.env.TRAVISTEST) {
+	mock('clipboardy', clipboard);
+} else {
+	clipboard = require('clipboardy');
+}
+
+const ipt = require('../src');
+const pkg = require('../package.json');
 
 // Mocked deps
 const noop = function () {};
@@ -215,67 +232,75 @@ test.cb('should be able to use autocomplete interface typing complete word', t =
 	prompt.rl.input.emit('keypress', 'm');
 });
 
-// Disables clipboard tests on travis, pretty sure we can not test it there
-if (!process.env.TRAVISTEST) {
-	test.serial.cb('should copy selected item to clipboard on --copy option', t => {
-		const prompt = ipt(t.context.p, t.context.ttys, {
-			info: () => {
-				paste((err, data) => {
-					if (err) {
-						t.fail(err);
-					}
+test.serial.cb('should copy selected item to clipboard on --copy option', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		info: () => {
+			clipboard.read()
+				.then(data => {
 					t.is(data, 'foo');
 					t.end();
+				})
+				.catch(err => {
+					t.fail(err);
+					t.end();
 				});
-			}
-		}, {copy: true}, 'foo\nbar');
-		prompt.rl.emit('line');
-	});
+		}
+	}, {copy: true}, 'foo\nbar');
+	prompt.rl.emit('line');
+});
 
-	test.serial.cb('should output correct item when using clipboard', t => {
-		const prompt = ipt(t.context.p, t.context.ttys, {
-			info: msg => {
-				t.is(msg, 'foo');
-				t.end();
-			}
-		}, {}, 'foo\nbar');
-		prompt.rl.emit('line');
-	});
+test.serial.cb('should output correct item when using clipboard', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		info: msg => {
+			t.is(msg, 'foo');
+			t.end();
+		}
+	}, {}, 'foo\nbar');
+	prompt.rl.emit('line');
+});
 
-	test.serial.cb('should never copy items if copy option is not active', t => {
-		copy('ipt is so cool', err => {
-			if (err) {
-				t.fail(err);
-			}
+test.serial.cb('should never copy items if copy option is not active', t => {
+	clipboard.write('ipt is so cool')
+		.then(() => {
 			const prompt = ipt(t.context.p, t.context.ttys, {
 				info: msg => {
 					t.is(msg, 'foo');
-					paste((err, data) => {
-						if (err) {
+					clipboard.read()
+						.then(data => {
+							t.is(data, 'ipt is so cool');
+							t.end();
+						})
+						.catch(err => {
 							t.fail(err);
-						}
-						t.is(data, 'ipt is so cool');
-						t.end();
-					});
+							t.end();
+						});
 				}
 			}, obj, 'foo\nbar');
 			prompt.rl.emit('line');
+		})
+		.catch(err => {
+			t.fail(err);
+			t.end();
 		});
-	});
+});
 
+// Disables clipboard cli test on travis
+if (!process.env.TRAVISTEST) {
 	test.serial.cb('should copy to clipboard from cli', t => {
 		const run = spawn('node', ['./src/cli.js', './test/fixtures/clipboard', '--no-ttys=true', '--copy', '--unquoted'], {
 			cwd
 		});
 		run.on('close', code => {
 			t.is(code, 0);
-			paste((err, data) => {
-				if (err) {
+			clipboard.read()
+				.then(data => {
+					t.is(data, 'ipt is awesome');
+					t.end();
+				})
+				.catch(err => {
 					t.fail(err);
-				}
-				t.is(data, 'ipt is awesome');
-				t.end();
-			});
+					t.end();
+				});
 		});
 		run.stdin.write('\n');
 	});
