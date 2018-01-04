@@ -1,14 +1,13 @@
 'use strict';
 
-var os = require('os');
+const os = require('os');
 
-var clipboard = require('copy-paste').copy;
-var inquirer = require('inquirer');
-var pkg = require('../package');
-var Promise = require('pinkie-promise');
-var fuzzysearch = require('fuzzysearch');
+const clipboard = require('copy-paste').copy;
+const inquirer = require('inquirer');
+const fuzzysearch = require('fuzzysearch');
+const pkg = require('../package');
 
-module.exports = function ipt(p, ttys, log, options, input, error) {
+module.exports = function (p, ttys, log, options, input, error) {
 	function printHelp() {
 		log.info(
 			'\nUsage:\n  ipt [options] [<path>]\n' +
@@ -54,16 +53,16 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 	}
 
 	function onPrompt(answer) {
-		var result = typeof answer.stdin === 'string' ?
+		const result = typeof answer.stdin === 'string' ?
 			formatResult(answer.stdin) :
 			answer.stdin.map(formatResult);
 
 		if (options.copy) {
 			try {
 				clipboard(result, end.bind(null, result));
-			} catch (e) {
+			} catch (err) {
 				if (options.debug) {
-					log.warn(e.toString());
+					log.warn(err.toString());
 				}
 				end(result);
 			}
@@ -84,7 +83,7 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 			ttys.stdout.end();
 			ttys.stdout.destroy();
 		}
-		// release cursor by printing to sdterr
+		// Release cursor by printing to sdterr
 		log.warn('\u001b[?25h');
 		p.exit(0);
 	}
@@ -99,7 +98,7 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 	function showList() {
 		defineErrorHandlers();
 
-		var prompt = inquirer.createPromptModule({
+		const prompt = inquirer.createPromptModule({
 			input: ttys.stdin,
 			output: ttys.stdout
 		});
@@ -108,19 +107,15 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 			prompt.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 		}
 
-		var promptChoices = input.split(options.separator || os.EOL)
-			.filter(function (item) {
-				return item;
-			})
-			// truncate displaying of anything greater than 80 chars
-			// keep in mind that inquirer interface takes some room
-			.map(function (item) {
-				return {
-					name: item.length > 71 ? item.substr(0, 71) + '...' : item,
-					value: item
-				};
-			});
-		var promptTypes = {
+		const promptChoices = input.split(options.separator || os.EOL)
+			.filter(item => item)
+			// Truncate displaying of anything greater than 80 chars
+			// Keep in mind that inquirer interface takes some room
+			.map(item => ({
+				name: item.length > 71 ? item.substr(0, 71) + '...' : item,
+				value: item
+			}));
+		const promptTypes = {
 			base: {
 				type: 'list',
 				name: 'stdin',
@@ -138,17 +133,13 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 				name: 'stdin',
 				message: 'Select an item:',
 				choices: promptChoices,
-				source: function (answer, input) {
+				source: (answer, input) => new Promise(resolve => {
 					input = input || '';
-					return new Promise(function (resolve) {
-						resolve(promptChoices.filter(function (item) {
-							return fuzzysearch(input.toLowerCase(), item.value.toLowerCase());
-						}));
-					});
-				}
+					resolve(promptChoices.filter(item => fuzzysearch(input.toLowerCase(), item.value.toLowerCase())));
+				})
 			}
 		};
-		var result = prompt(
+		const result = prompt(
 			(options.multiple && promptTypes.multiple) ||
 			(options.autocomplete && promptTypes.autocomplete) ||
 			promptTypes.base
@@ -159,11 +150,11 @@ module.exports = function ipt(p, ttys, log, options, input, error) {
 		return result.ui;
 	}
 
-	if (options.help) {
-		printHelp();
-	} else if (options.version) {
+	const showHelp = options.help || !input;
+
+	if (options.version) {
 		printVersion();
-	} else if (!input) {
+	} else if (showHelp) {
 		printHelp();
 	} else {
 		try {
