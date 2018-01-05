@@ -44,7 +44,7 @@
   "devDependencies": {
     "ava": "^0.24.0",
     "mock-require": "^2.0.2",
-    "tempfile": "^1.1.1",
+    "tempfile": "^2.0.0",
     "xo": "^0.18.2"
   },
   "xo": {
