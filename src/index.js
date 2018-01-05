@@ -2,7 +2,7 @@
 
 const os = require('os');
 
-const clipboard = require('copy-paste').copy;
+const clipboard = require('clipboardy').write;
 const inquirer = require('inquirer');
 const fuzzysearch = require('fuzzysearch');
 const pkg = require('../package');
@@ -58,14 +58,14 @@ module.exports = function (p, ttys, log, options, input, error) {
 			answer.stdin.map(formatResult);
 
 		if (options.copy) {
-			try {
-				clipboard(result, end.bind(null, result));
-			} catch (err) {
-				if (options.debug) {
-					log.warn(err.toString());
-				}
-				end(result);
-			}
+			clipboard(result)
+				.then(result => end(result))
+				.catch(err => {
+					if (options.debug) {
+						log.warn(err.toString());
+					}
+					end(result);
+				});
 		} else {
 			end(result);
 		}
