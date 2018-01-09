@@ -2,11 +2,13 @@
 
 const fs = require('fs');
 const path = require('path');
-const {spawn} = require('child_process');
+const {exec, spawn} = require('child_process');
+const {promisify} = require('util');
 
 const mock = require('mock-require');
 const test = require('ava');
 const tempfile = require('tempfile');
+const template = require('lodash.template');
 
 // Mock clipboard on CI builds
 let clipboard = {
@@ -418,132 +420,71 @@ test.cb('should display help message on empty invocation', t => {
 	run.stdin.end();
 });
 
-test.cb('should display version on --version', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--version'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, pkg.version.toString() + '\n');
-		t.end();
-	});
-	run.stdin.end();
-});
+const cli = ({cmd, input = [], output, error}) => t => {
+	const stdinfile = tempfile();
+	const stdin = fs.createWriteStream(stdinfile);
+	promisify(exec)(template(cmd)({stdin: stdinfile}), {cwd})
+		.then(({stdout, stderr}) => {
+			if (stderr) {
+				console.error(stderr);
+			}
+			t.is(output, stdout);
+			t.end();
+		})
+		.catch(err => {
+			if (error) {
+				t.is(error, err.stderr);
+				t.end();
+			} else {
+				t.fail(err);
+			}
+		});
+	input.forEach(i => stdin.write(i));
+	stdin.end();
+};
 
-test.cb('should be able to use custom separators with --separator', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/test.csv', '--no-ttys=true', '-n', '--separator=,'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'oranges\n');
-		t.end();
-	});
-	run.stdin.write('j');
-	run.stdin.write(' ');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
+test.cb('should be able to pipe data from stdin', cli({
+	cmd: 'echo "banana,peach,apple" | ipt --stdin-tty=<%= stdin %> -s , --debug',
+	input: ['j', '\n'],
+	output: 'peach\n'
+}));
 
-test.cb('should be able to use different separators with --separator', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/customseparators', '--no-ttys=true', '-n', '--separator=:'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'bar\n');
-		t.end();
-	});
-	run.stdin.write('j');
-	run.stdin.write(' ');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
+test.cb('should run in autocomplete mode from cli', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %> -n -a --debug',
+	input: ['l', 'o', 'r', '\n'],
+	output: 'lorem\n'
+}));
 
-test.cb('should display error if provided file is not found', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/inexistentfilename', '--no-ttys=true', '-n'], {
-		cwd
-	});
-	run.stderr.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 1);
-		t.is(content, 'Error reading file from path\n');
-		t.end();
-	});
-});
+test.cb('should not quote result args with white space if --unquoted option is given', cli({
+	cmd: 'node ./src/cli.js "./test/fixtures/white space" --stdin-tty=<%= stdin %> -n --unquoted --debug',
+	input: ['\n'],
+	output: 'white space\n'
+}));
 
-test.cb('should quote result args with white space', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n'], {
-		cwd
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, '"white space"\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
+test.cb('should quote result args with white space', cli({
+	cmd: 'node ./src/cli.js "./test/fixtures/white space" --stdin-tty=<%= stdin %> n --debug',
+	input: ['\n'],
+	output: '"white space"\n'
+}));
 
-test.cb('should not quote result args with white space if --unquoted option is given', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n', '--unquoted'], {
-		cwd
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'white space\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
+test.cb('should display error if provided file is not found', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/inexistentfilename -n',
+	error: 'Error reading incoming data\n'
+}));
 
-test.cb('should run in autocomplete mode from cli', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-a'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		if (data) {
-			content = data.toString();
-		}
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'lorem\n');
-		t.end();
-	});
-	run.stdin.write('l');
-	run.stdin.write('o');
-	run.stdin.write('r');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
+test.cb('should be able to use different separators with --separator', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/customseparators --stdin-tty=<%= stdin %> -n --separator=: --debug',
+	input: ['j', ' ', '\n'],
+	output: 'bar\n'
+}));
 
+test.cb('should be able to use custom separators with --separator', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/test.csv --stdin-tty=<%= stdin %> -n --separator=, --debug',
+	input: ['j', ' ', '\n'],
+	output: 'oranges\n'
+}));
+
+test.cb('should display version on --version', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %> -n --version --debug',
+	output: pkg.version.toString() + '\n'
+}));
