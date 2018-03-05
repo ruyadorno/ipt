@@ -3,8 +3,9 @@
 'use strict';
 
 const fs = require('fs');
+const {promisify} = require('util');
 const getStdin = require('get-stdin');
-const ttys = require('ttys');
+const reopenTTY = require('reopen-tty');
 const argv = require('minimist')(process.argv.slice(2), {
 	boolean: [
 		'autocomplete',
@@ -29,7 +30,7 @@ const argv = require('minimist')(process.argv.slice(2), {
 	}
 });
 
-const filePath = argv._[0];
+const [filePath] = argv._;
 
 // Exits program execution on ESC or q keypress
 process.stdin.on('keypress', (ch, key) => {
@@ -39,7 +40,19 @@ process.stdin.on('keypress', (ch, key) => {
 });
 
 function startIpt(input) {
-	require('./')(process, (argv['no-ttys'] ? process : ttys), console, argv, input, error);
+	Promise.all([
+		promisify(reopenTTY.stdin)(),
+		promisify(reopenTTY.stdout)(),
+		promisify(reopenTTY.stderr)()
+	])
+		.then(stdio => {
+			const [stdin, stdout, stderr] = stdio;
+			const getStdin = () => argv['stdin-tty'] ? fs.createReadStream(argv['stdin-tty']) : stdin;
+			require('.')(process, (argv['no-ttys'] ? process : {stdin: getStdin(), stdout, stderr}), console, argv, input, error);
+		})
+		.catch(err => {
+			console.error(argv.debug ? err : 'Error opening tty interaction');
+		});
 }
 
 function error(e, msg) {
@@ -47,20 +60,12 @@ function error(e, msg) {
 	process.exit(1);
 }
 
-if (filePath) {
-	fs.readFile(filePath, {
+(filePath ?
+	promisify(fs.readFile)(filePath, {
 		encoding: argv['file-encoding'] || 'utf8'
-	}, (err, data) => {
-		if (err) {
-			error(err, 'Error reading file from path');
-		} else {
-			startIpt(data);
-		}
+	}) :
+	getStdin())
+	.then(data => startIpt(data))
+	.catch(err => {
+		error(err, 'Error reading incoming data');
 	});
-} else {
-	getStdin().then(data => {
-		startIpt(data);
-	}).catch(err => {
-		error(err, 'Error while reading stdin');
-	});
-}

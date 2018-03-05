@@ -84,7 +84,7 @@ module.exports = function (p, ttys, log, options, input, error) {
 			ttys.stdout.destroy();
 		}
 		// Release cursor by printing to sdterr
-		log.warn('\u001b[?25h');
+		log.warn('\u001B[?25h');
 		p.exit(0);
 	}
 

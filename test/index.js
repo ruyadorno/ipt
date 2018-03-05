@@ -2,11 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const {spawn} = require('child_process');
+const {exec, spawn} = require('child_process');
 
 const mock = require('mock-require');
 const test = require('ava');
 const tempfile = require('tempfile');
+const template = require('lodash.template');
 
 // Mock clipboard on CI builds
 let clipboard = {
@@ -31,10 +32,6 @@ const noop = function () {};
 const obj = Object.freeze({});
 const cwd = process.cwd();
 const helpMessageOutput = fs.readFileSync(path.join(__dirname, 'fixtures', 'help'), {encoding: 'utf8'});
-
-function testConsoleOutput(t, output, expected) {
-	t.is(output.substr(-expected.length), expected);
-}
 
 // Mocks some context
 test.beforeEach(t => {
@@ -308,242 +305,99 @@ if (!process.env.TRAVISTEST) {
 
 // --- cli integration tests
 
-test.cb('should run from cli', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'foo\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should run using multiple from cli', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-m'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'foo\nlorem\n');
-		t.end();
-	});
-	run.stdin.write(' ');
-	run.stdin.write('j');
-	run.stdin.write('j');
-	run.stdin.write(' ');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should run different encoding using --file-encoding option', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/asciiencode', '--no-ttys=true', '-n', '--file-encoding=ascii'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'foo\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should run other different encoding using --file-encoding option', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/utf16encode', '--no-ttys=true', '-n', '--file-encoding=utf16le'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'lorem\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should display help message on --help', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--help'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, helpMessageOutput);
-		t.end();
-	});
-	run.stdin.end();
-});
-
-test.cb('should display help message on empty invocation', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, helpMessageOutput);
-		t.end();
-	});
-	run.stdin.end();
-});
-
-test.cb('should display version on --version', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--version'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, pkg.version.toString() + '\n');
-		t.end();
-	});
-	run.stdin.end();
-});
-
-test.cb('should be able to use custom separators with --separator', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/test.csv', '--no-ttys=true', '-n', '--separator=,'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'oranges\n');
-		t.end();
-	});
-	run.stdin.write('j');
-	run.stdin.write(' ');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should be able to use different separators with --separator', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/customseparators', '--no-ttys=true', '-n', '--separator=:'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'bar\n');
-		t.end();
-	});
-	run.stdin.write('j');
-	run.stdin.write(' ');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should display error if provided file is not found', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/inexistentfilename', '--no-ttys=true', '-n'], {
-		cwd
-	});
-	run.stderr.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 1);
-		t.is(content, 'Error reading file from path\n');
-		t.end();
-	});
-});
-
-test.cb('should quote result args with white space', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n'], {
-		cwd
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, '"white space"\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should not quote result args with white space if --unquoted option is given', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/white space', '--no-ttys=true', '-n', '--unquoted'], {
-		cwd
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'white space\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should run in autocomplete mode from cli', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-a'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		if (data) {
-			content = data.toString();
+const cli = ({cmd, input = [], output, error}) => t => {
+	const stdinfile = tempfile();
+	const stdin = fs.createWriteStream(stdinfile);
+	const runner = exec(template(cmd)({stdin: stdinfile}), {cwd}, (err, stdout, stderr) => {
+		if (err) {
+			t.is(error, stderr);
+			t.end();
+		} else {
+			t.is(output, stdout);
+			t.end();
 		}
 	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'lorem\n');
-		t.end();
-	});
-	run.stdin.write('l');
-	run.stdin.write('o');
-	run.stdin.write('r');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
+	input.forEach(i => stdin.write(i));
+	runner.stdin.end();
+	stdin.end();
+};
 
+test.cb('should be able to pipe data from stdin', cli({
+	cmd: 'echo "banana,peach,apple" | ./src/cli.js --stdin-tty=<%= stdin %> -s , --debug',
+	input: ['j', '\n'],
+	output: 'peach\n'
+}));
+
+test.cb('should run in autocomplete mode from cli', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %> -n -a --debug',
+	input: ['l', 'o', 'r', '\n'],
+	output: 'lorem\n'
+}));
+
+test.cb('should not quote result args with white space if --unquoted option is given', cli({
+	cmd: 'node ./src/cli.js "./test/fixtures/white space" --stdin-tty=<%= stdin %> -n --unquoted --debug',
+	input: ['\n'],
+	output: 'white space\n'
+}));
+
+test.cb('should quote result args with white space', cli({
+	cmd: 'node ./src/cli.js "./test/fixtures/white space" --stdin-tty=<%= stdin %> n --debug',
+	input: ['\n'],
+	output: '"white space"\n'
+}));
+
+test.cb('should display error if provided file is not found', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/inexistentfilename -n',
+	error: 'Error reading incoming data\n'
+}));
+
+test.cb('should be able to use different separators with --separator', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/customseparators --stdin-tty=<%= stdin %> -n --separator=: --debug',
+	input: ['j', ' ', '\n'],
+	output: 'bar\n'
+}));
+
+test.cb('should be able to use custom separators with --separator', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/test.csv --stdin-tty=<%= stdin %> -n --separator=, --debug',
+	input: ['j', ' ', '\n'],
+	output: 'oranges\n'
+}));
+
+test.cb('should display version on --version', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %> -n --version --debug',
+	output: pkg.version.toString() + '\n'
+}));
+
+test.cb('should display help message on empty invocation', cli({
+	cmd: 'node ./src/cli.js',
+	output: helpMessageOutput
+}));
+
+test.cb('should display help message on --help', cli({
+	cmd: 'node ./src/cli.js --help',
+	output: helpMessageOutput
+}));
+
+test.cb('should run other different encoding using --file-encoding option', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/utf16encode --file-encoding=utf16le --stdin-tty=<%= stdin %>',
+	input: ['\n'],
+	output: 'lorem\n'
+}));
+
+test.cb('should run different encoding using --file-encoding option', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/asciiencode --file-encoding=ascii --stdin-tty=<%= stdin %>',
+	input: ['\n'],
+	output: 'foo\n'
+}));
+
+test.cb('should run using multiple from cli', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %> -m',
+	input: [' ', 'j', 'j', ' ', '\n'],
+	output: 'foo\nlorem\n'
+}));
+
+test.cb('should run from cli', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %>',
+	input: ['\n'],
+	output: 'foo\n'
+}));
