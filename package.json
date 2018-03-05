@@ -35,23 +35,28 @@
   "dependencies": {
     "clipboardy": "^1.2.2",
     "fuzzysearch": "^1.0.3",
-    "get-stdin": "^5.0.1",
-    "inquirer": "^4.0.2",
+    "get-stdin": "^6.0.0",
+    "inquirer": "^5.0.1",
     "inquirer-autocomplete-prompt": "^0.12.1",
     "minimist": "^1.2.0",
     "reopen-tty": "^1.1.1"
   },
   "devDependencies": {
-    "ava": "^0.24.0",
+    "ava": "^1.0.0-beta.3",
     "lodash.template": "^4.4.0",
-    "mock-require": "^2.0.2",
+    "mock-require": "^3.0.1",
     "tempfile": "^2.0.0",
-    "xo": "^0.18.2"
+    "xo": "^0.20.3"
+  },
+  "ava": {
+    "babel": false,
+    "compileEnhancements": false
   },
   "xo": {
     "rules": {
       "no-negated-condition": 0,
-      "ava/test-ended": 0
+      "ava/test-ended": 0,
+      "promise/prefer-await-to-then": 0
     }
   },
   "license": "MIT"
