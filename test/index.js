@@ -403,48 +403,24 @@ test.cb('should display help message on --help', t => {
 	run.stdin.end();
 });
 
-test.cb('should display help message on empty invocation', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, helpMessageOutput);
-		t.end();
-	});
-	run.stdin.end();
-});
-
 const cli = ({cmd, input = [], output, error}) => t => {
 	const stdinfile = tempfile();
 	const stdin = fs.createWriteStream(stdinfile);
-	promisify(exec)(template(cmd)({stdin: stdinfile}), {cwd})
-		.then(({stdout, stderr}) => {
-			if (stderr) {
-				console.error(stderr);
-			}
-			t.is(output, stdout);
+	const runner = exec(template(cmd)({stdin: stdinfile}), {cwd}, (err, stdout, stderr) => {
+		if (err) {
+			t.is(error, stderr);
 			t.end();
-		})
-		.catch(err => {
-			if (error) {
-				t.is(error, err.stderr);
-				t.end();
-			} else {
-				t.fail(err);
-			}
-		});
+		}
+		t.is(output, stdout);
+		t.end();
+	});
 	input.forEach(i => stdin.write(i));
+	runner.stdin.end();
 	stdin.end();
 };
 
 test.cb('should be able to pipe data from stdin', cli({
-	cmd: 'echo "banana,peach,apple" | ipt --stdin-tty=<%= stdin %> -s , --debug',
+	cmd: 'echo "banana,peach,apple" | ./src/cli.js --stdin-tty=<%= stdin %> -s , --debug',
 	input: ['j', '\n'],
 	output: 'peach\n'
 }));
@@ -487,4 +463,9 @@ test.cb('should be able to use custom separators with --separator', cli({
 test.cb('should display version on --version', cli({
 	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %> -n --version --debug',
 	output: pkg.version.toString() + '\n'
+}));
+
+test.cb('should display help message on empty invocation', cli({
+	cmd: 'node ./src/cli.js --stdin-tty=<%= stdin %>',
+	output: helpMessageOutput
 }));

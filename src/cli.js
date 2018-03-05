@@ -30,7 +30,7 @@ const argv = require('minimist')(process.argv.slice(2), {
 	}
 });
 
-const filePath = argv._[0];
+const [filePath] = argv._;
 
 // Exits program execution on ESC or q keypress
 process.stdin.on('keypress', (ch, key) => {
@@ -47,8 +47,8 @@ function startIpt(input) {
 	])
 		.then(stdio => {
 			const [stdin, stdout, stderr] = stdio;
-			const istdin = argv['stdin-tty'] ? fs.createReadStream(argv['stdin-tty']) : stdin;
-			require('./')(process, (argv['no-ttys'] ? process : {stdin: istdin, stdout, stderr}), console, argv, input, error);
+			const getStdin = () => argv['stdin-tty'] ? fs.createReadStream(argv['stdin-tty']) : stdin;
+			require('.')(process, (argv['no-ttys'] ? process : {stdin: getStdin(), stdout, stderr}), console, argv, input, error);
 		})
 		.catch(err => {
 			console.error(argv.debug ? err : 'Error opening tty interaction');
