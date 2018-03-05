@@ -3,7 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 const {exec, spawn} = require('child_process');
-const {promisify} = require('util');
 
 const mock = require('mock-require');
 const test = require('ava');
@@ -33,10 +32,6 @@ const noop = function () {};
 const obj = Object.freeze({});
 const cwd = process.cwd();
 const helpMessageOutput = fs.readFileSync(path.join(__dirname, 'fixtures', 'help'), {encoding: 'utf8'});
-
-function testConsoleOutput(t, output, expected) {
-	t.is(output.substr(-expected.length), expected);
-}
 
 // Mocks some context
 test.beforeEach(t => {
@@ -310,99 +305,6 @@ if (!process.env.TRAVISTEST) {
 
 // --- cli integration tests
 
-test.cb('should run from cli', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'foo\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should run using multiple from cli', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '-m'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'foo\nlorem\n');
-		t.end();
-	});
-	run.stdin.write(' ');
-	run.stdin.write('j');
-	run.stdin.write('j');
-	run.stdin.write(' ');
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should run different encoding using --file-encoding option', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/asciiencode', '--no-ttys=true', '-n', '--file-encoding=ascii'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'foo\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should run other different encoding using --file-encoding option', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/utf16encode', '--no-ttys=true', '-n', '--file-encoding=utf16le'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		testConsoleOutput(t, content, 'lorem\n');
-		t.end();
-	});
-	run.stdin.write('\n');
-	run.stdin.end();
-});
-
-test.cb('should display help message on --help', t => {
-	let content = '';
-	const run = spawn('node', ['./src/cli.js', './test/fixtures/simpletest', '--no-ttys=true', '-n', '--help'], {
-		cwd,
-		stdio: ['pipe', 'pipe', 'inherit']
-	});
-	run.stdout.on('data', data => {
-		content += data.toString();
-	});
-	run.on('close', code => {
-		t.is(code, 0);
-		t.is(content, helpMessageOutput);
-		t.end();
-	});
-	run.stdin.end();
-});
-
 const cli = ({cmd, input = [], output, error}) => t => {
 	const stdinfile = tempfile();
 	const stdin = fs.createWriteStream(stdinfile);
@@ -410,9 +312,10 @@ const cli = ({cmd, input = [], output, error}) => t => {
 		if (err) {
 			t.is(error, stderr);
 			t.end();
+		} else {
+			t.is(output, stdout);
+			t.end();
 		}
-		t.is(output, stdout);
-		t.end();
 	});
 	input.forEach(i => stdin.write(i));
 	runner.stdin.end();
@@ -466,6 +369,35 @@ test.cb('should display version on --version', cli({
 }));
 
 test.cb('should display help message on empty invocation', cli({
-	cmd: 'node ./src/cli.js --stdin-tty=<%= stdin %>',
+	cmd: 'node ./src/cli.js',
 	output: helpMessageOutput
+}));
+
+test.cb('should display help message on --help', cli({
+	cmd: 'node ./src/cli.js --help',
+	output: helpMessageOutput
+}));
+
+test.cb('should run other different encoding using --file-encoding option', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/utf16encode --file-encoding=utf16le --stdin-tty=<%= stdin %>',
+	input: ['\n'],
+	output: 'lorem\n'
+}));
+
+test.cb('should run different encoding using --file-encoding option', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/asciiencode --file-encoding=ascii --stdin-tty=<%= stdin %>',
+	input: ['\n'],
+	output: 'foo\n'
+}));
+
+test.cb('should run using multiple from cli', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %> -m',
+	input: [' ', 'j', 'j', ' ', '\n'],
+	output: 'foo\nlorem\n'
+}));
+
+test.cb('should run from cli', cli({
+	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %>',
+	input: ['\n'],
+	output: 'foo\n'
 }));
