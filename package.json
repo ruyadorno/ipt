@@ -39,8 +39,8 @@
     "get-stdin": "^6.0.0",
     "inquirer": "^5.0.1",
     "inquirer-autocomplete-prompt": "^0.12.1",
-    "minimist": "^1.2.0",
-    "reopen-tty": "^1.1.1"
+    "reopen-tty": "^1.1.1",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "ava": "^1.0.0-beta.3",

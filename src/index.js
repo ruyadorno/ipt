@@ -5,34 +5,9 @@ const os = require('os');
 const clipboard = require('clipboardy').write;
 const inquirer = require('inquirer');
 const fuzzysearch = require('fuzzysearch');
-const pkg = require('../package');
 
 module.exports = function (p, ttys, log, options, input, error) {
 	const sep = options.separator || os.EOL;
-	function printHelp() {
-		log.info(
-			'\nUsage:\n  ipt [options] [<path>]\n' +
-			'\nSpecify a file <path> or pipe some data from stdin to start interacting.\n' +
-			'\nOptions:\n' +
-			'  -v --version       Displays app version number\n' +
-			'  -h --help          Shows this help message\n' +
-			'  -a --autocomplete  Starts interactive selection in autocomplete mode\n' +
-			'  -d --debug         Prints original node error messages to stderr on errors\n' +
-			'  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8\n' +
-			'  -m --multiple      Allows the selection of multiple items\n' +
-			'  -s --separator     Defines a separator to be used to split input into items\n' +
-			'  -c --copy          Copy selected item(s) to clipboard\n' +
-			'  -t --no-trim       Prevents trimming of the result strings\n' +
-			'  -p --extract-path  Returns only a valid path within each input item\n' +
-			'  --unquoted         Force the output to be unquoted\n'
-		);
-		p.exit(0);
-	}
-
-	function printVersion() {
-		log.info(pkg.version);
-		p.exit(0);
-	}
 
 	function end(data) {
 		if (!Array.isArray(data)) {
@@ -138,18 +113,10 @@ module.exports = function (p, ttys, log, options, input, error) {
 		return result.ui;
 	}
 
-	const showHelp = options.help || !input;
-
-	if (options.version) {
-		printVersion();
-	} else if (showHelp) {
-		printHelp();
-	} else {
-		try {
-			return showList();
-		} catch (err) {
-			error(err, 'An error occurred while building the interactive interface');
-		}
+	try {
+		return showList();
+	} catch (err) {
+		error(err, 'An error occurred while building the interactive interface');
 	}
 };
 

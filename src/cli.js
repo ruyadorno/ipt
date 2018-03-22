@@ -6,31 +6,38 @@ const fs = require('fs');
 const {promisify} = require('util');
 const getStdin = require('get-stdin');
 const reopenTTY = require('reopen-tty');
-const argv = require('minimist')(process.argv.slice(2), {
-	boolean: [
-		'autocomplete',
-		'debug',
-		'help',
-		'multiple',
-		'copy',
-		'version',
-		'no-ttys',
-		'extract-path',
-		'no-trim'
-	],
-	alias: {
-		a: 'autocomplete',
-		d: 'debug',
-		e: 'file-encoding',
-		h: 'help',
-		m: 'multiple',
-		c: 'copy',
-		s: 'separator',
-		t: 'no-trim',
-		p: 'extract-path',
-		v: 'version'
-	}
-});
+const yargs = require('yargs');
+
+const {argv} = yargs
+	.example('ls | ipt', 'Builds an interactive interface out of current dir items')
+	.example('cat $(ls | ipt)', 'Uses cat to print contents of whatever item is selected')
+	.example('ipt ./file', 'Builds the interactive list out of a given file')
+	.usage('Usage:\n  ipt [options] [<path>]')
+	.alias('a', 'autocomplete')
+	.describe('a', 'Starts in autocomplete mode')
+	.alias('c', 'copy')
+	.describe('c', 'Copy selected item(s) to clipboard')
+	.alias('d', 'debug')
+	.describe('d', 'Prints to stderr any internal error')
+	.alias('e', 'file-encoding')
+	.describe('e', 'Encoding for file <path>, defaults to utf8')
+	.help('h')
+	.alias('h', 'help')
+	.describe('h', 'Shows this help message')
+	.alias('m', 'multiple')
+	.describe('m', 'Allows the selection of multiple items')
+	.alias('s', 'separator')
+	.describe('s', 'Separator to to split input into items')
+	.alias('t', 'no-trim')
+	.describe('t', 'Prevents trimming of the result strings')
+	.alias('p', 'extract-path')
+	.describe('p', 'Returns only a valid path for each item')
+	.alias('u', 'unquoted')
+	.describe('u', 'Force the output to be unquoted')
+	.alias('v', 'version')
+	.boolean(['a', 'c', 'd', 'h', 'm', 't', 'p', 'u', 'v'])
+	.string(['e', 's'])
+	.epilog('Visit https://github.com/ruyadorno/ipt for more info');
 
 const [filePath] = argv._;
 
@@ -42,6 +49,10 @@ process.stdin.on('keypress', (ch, key) => {
 });
 
 function startIpt(input) {
+	if (!input) {
+		return yargs.showHelp('log');
+	}
+
 	Promise.all([
 		promisify(reopenTTY.stdin)(),
 		promisify(reopenTTY.stdout)(),
@@ -65,9 +76,8 @@ function error(e, msg) {
 (filePath ?
 	promisify(fs.readFile)(filePath, {
 		encoding: argv['file-encoding'] || 'utf8'
-	}) :
-	getStdin())
-	.then(data => startIpt(data))
+	}) : getStdin())
+	.then(startIpt)
 	.catch(err => {
 		error(err, 'Error reading incoming data');
 	});

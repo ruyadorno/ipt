@@ -129,22 +129,23 @@ source ~/.bashrc
 ## Help
 
 ```sh
+
 Usage:
   ipt [options] [<path>]
 
-Specify a file <path> or pipe some data from stdin to start interacting.
-
 Options:
-  -v --version       Displays app version number
-  -h --help          Shows this help message
-  -a --autocomplete  Starts interactive selection in autocomplete mode
-  -d --debug         Prints original node error messages to stderr on errors
-  -e --file-encoding Sets a encoding to open <path> file, defaults to utf8
-  -m --multiple      Allows the selection of multiple items
-  -s --separator     Defines a separator to be used to split input into items
-  -c --copy          Do not copy selected item(s) to clipboard
-  -t --no-trim       Prevents trimming of the result strings
-  --unquoted         Force the output to be unquoted
+  -a, --autocomplete   Starts in autocomplete mode                     [boolean]
+  -c, --copy           Copy selected item(s) to clipboard              [boolean]
+  -d, --debug          Prints to stderr any internal error             [boolean]
+  -e, --file-encoding  Encoding for file <path>, defaults to utf8       [string]
+  -h, --help           Shows this help message                         [boolean]
+  -m, --multiple       Allows the selection of multiple items          [boolean]
+  -s, --separator      Separator to to split input into items           [string]
+  -t, --no-trim        Prevents trimming of the result strings         [boolean]
+  -p, --extract-path   Returns only a valid path for each item         [boolean]
+  -u, --unquoted       Force the output to be unquoted                 [boolean]
+  -v, --version        Show version number                             [boolean]
+
 ```
 
 

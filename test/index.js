@@ -57,33 +57,6 @@ test.afterEach(t => {
 	t.context.ttys = null;
 });
 
-test.cb('should display help message if no input provided', t => {
-	ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg.slice(0, 33), '\nUsage:\n  ipt [options] [<path>]\n');
-			t.end();
-		}
-	}, obj);
-});
-
-test.cb('should display help message on help option', t => {
-	ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg.slice(0, 33), '\nUsage:\n  ipt [options] [<path>]\n');
-			t.end();
-		}
-	}, Object.assign({}, obj, {help: true}));
-});
-
-test.cb('should display version number', t => {
-	ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, pkg.version.toString());
-			t.end();
-		}
-	}, Object.assign({}, {version: true}));
-});
-
 test.cb('should build and select items from a basic list', t => {
 	const prompt = ipt(t.context.p, t.context.ttys, {
 		info: msg => {
