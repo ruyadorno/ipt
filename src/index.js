@@ -8,6 +8,7 @@ const fuzzysearch = require('fuzzysearch');
 const pkg = require('../package');
 
 module.exports = function (p, ttys, log, options, input, error) {
+	const sep = options.separator || os.EOL;
 	function printHelp() {
 		log.info(
 			'\nUsage:\n  ipt [options] [<path>]\n' +
@@ -22,6 +23,7 @@ module.exports = function (p, ttys, log, options, input, error) {
 			'  -s --separator     Defines a separator to be used to split input into items\n' +
 			'  -c --copy          Copy selected item(s) to clipboard\n' +
 			'  -t --no-trim       Prevents trimming of the result strings\n' +
+			'  -p --extract-path  Returns only a valid path within each input item\n' +
 			'  --unquoted         Force the output to be unquoted\n'
 		);
 		p.exit(0);
@@ -41,6 +43,8 @@ module.exports = function (p, ttys, log, options, input, error) {
 	}
 
 	function formatResult(str) {
+		str = str || '';
+
 		if (!options['no-trim']) {
 			str = str.trim();
 		}
@@ -49,26 +53,7 @@ module.exports = function (p, ttys, log, options, input, error) {
 			return str;
 		}
 
-		return str.indexOf(' ') >= 0 ? '"' + str + '"' : str;
-	}
-
-	function onPrompt(answer) {
-		const result = typeof answer.stdin === 'string' ?
-			formatResult(answer.stdin) :
-			answer.stdin.map(formatResult);
-
-		if (options.copy) {
-			clipboard(result)
-				.then(result => end(result))
-				.catch(err => {
-					if (options.debug) {
-						log.warn(err.toString());
-					}
-					end(result);
-				});
-		} else {
-			end(result);
-		}
+		return str.indexOf(' ') > -1 ? `"${str}"` : str;
 	}
 
 	function onForcedExit(e) {
@@ -107,7 +92,7 @@ module.exports = function (p, ttys, log, options, input, error) {
 			prompt.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 		}
 
-		const promptChoices = input.split(options.separator || os.EOL)
+		const promptChoices = input.split(sep)
 			.filter(item => item)
 			// Truncate displaying of anything greater than 80 chars
 			// Keep in mind that inquirer interface takes some room
@@ -145,8 +130,11 @@ module.exports = function (p, ttys, log, options, input, error) {
 			promptTypes.base
 		);
 		result
-			.then(onPrompt)
-			.catch(onForcedExit);
+			.then(answers => [].concat(answers.stdin))
+			.then(answers => options['extract-path'] ? Promise.all(answers.map(require('extract-path'))) : answers)
+			.then(answers => answers.map(formatResult))
+			.then(answers => options.copy ? clipboard(answers.join(sep)).then(end) : end(answers))
+			.catch(console.log);
 		return result.ui;
 	}
 

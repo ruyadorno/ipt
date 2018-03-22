@@ -15,6 +15,7 @@ const argv = require('minimist')(process.argv.slice(2), {
 		'copy',
 		'version',
 		'no-ttys',
+		'extract-path',
 		'no-trim'
 	],
 	alias: {
@@ -26,6 +27,7 @@ const argv = require('minimist')(process.argv.slice(2), {
 		c: 'copy',
 		s: 'separator',
 		t: 'no-trim',
+		p: 'extract-path',
 		v: 'version'
 	}
 });

@@ -34,6 +34,7 @@
   ],
   "dependencies": {
     "clipboardy": "^1.2.2",
+    "extract-path": "^1.0.0",
     "fuzzysearch": "^1.0.3",
     "get-stdin": "^6.0.0",
     "inquirer": "^5.0.1",
