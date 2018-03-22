@@ -14,5 +14,6 @@ Options:
   -s --separator     Defines a separator to be used to split input into items
   -c --copy          Copy selected item(s) to clipboard
   -t --no-trim       Prevents trimming of the result strings
+  -p --extract-path  Returns only a valid path within each input item
   --unquoted         Force the output to be unquoted
 

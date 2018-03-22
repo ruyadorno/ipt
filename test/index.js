@@ -229,6 +229,30 @@ test.cb('should be able to use autocomplete interface typing complete word', t =
 	prompt.rl.input.emit('keypress', 'm');
 });
 
+test.cb('should be able to retrieve a valid path from an input', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		error: console.log,
+		info: msg => {
+			t.is(msg, 'package.json');
+			t.end();
+		}
+	}, Object.assign({}, obj, {'extract-path': true, debug: true}), '?? foo\n?? bar\nM package.json');
+	prompt.rl.input.emit('keypress', null, {name: 'down'});
+	prompt.rl.input.emit('keypress', null, {name: 'down'});
+	prompt.rl.emit('line');
+});
+
+test.cb('should not be able to retrieve an invalid path from an input', t => {
+	const prompt = ipt(t.context.p, t.context.ttys, {
+		error: console.log,
+		info: msg => {
+			t.is(msg, '');
+			t.end();
+		}
+	}, Object.assign({}, obj, {'extract-path': true, debug: true}), '?? foo\n?? bar\nM package.json');
+	prompt.rl.emit('line');
+});
+
 test.serial.cb('should copy selected item to clipboard on --copy option', t => {
 	const prompt = ipt(t.context.p, t.context.ttys, {
 		info: () => {
@@ -400,4 +424,10 @@ test.cb('should run from cli', cli({
 	cmd: 'node ./src/cli.js ./test/fixtures/simpletest --stdin-tty=<%= stdin %>',
 	input: ['\n'],
 	output: 'foo\n'
+}));
+
+test.cb('should get valid paths if using -p option', cli({
+	cmd: 'ls | node ./src/cli.js -p --stdin-tty=<%= stdin %>',
+	input: ['k', '\n'],
+	output: 'test\n'
 }));
