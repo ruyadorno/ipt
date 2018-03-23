@@ -57,6 +57,7 @@
     "rules": {
       "no-negated-condition": 0,
       "ava/test-ended": 0,
+      "ava/prefer-async-await": 0,
       "promise/prefer-await-to-then": 0
     }
   },
