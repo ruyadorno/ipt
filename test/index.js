@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {exec, spawn} = require('child_process');
+const {exec} = require('child_process');
 
 const mock = require('mock-require');
 const test = require('ava');
@@ -28,8 +28,6 @@ const ipt = require('../src');
 const pkg = require('../package.json');
 
 // Mocked deps
-const noop = function () {};
-const obj = Object.freeze({});
 const cwd = process.cwd();
 const helpMessageOutput = fs.readFileSync(path.join(__dirname, 'fixtures', 'help'), {encoding: 'utf8'});
 
@@ -39,17 +37,12 @@ test.beforeEach(t => {
 	const ttyStdin = tempfile();
 	fs.writeFileSync(stdin, '');
 	fs.writeFileSync(ttyStdin, '');
-	t.context.p = {
-		on: noop,
-		exit: noop,
-		stdin: fs.createReadStream(stdin),
-		stdout: fs.createWriteStream(tempfile()),
-		stderr: fs.createWriteStream(tempfile())
-	};
-	t.context.ttys = {
+	t.context.opts = {
+		sep: '\n',
 		stdin: fs.createReadStream(ttyStdin),
 		stdout: fs.createWriteStream(tempfile())
 	};
+	t.context.prompt = {};
 });
 
 test.afterEach(t => {
@@ -57,246 +50,185 @@ test.afterEach(t => {
 	t.context.ttys = null;
 });
 
-test.cb('should build and select items from a basic list', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'foo');
-			t.end();
-		}
-	}, obj, 'foo\nbar');
-	prompt.rl.emit('line');
+const key = {
+	down: [null, {name: 'down'}],
+	space: [null, {name: 'space'}],
+	l: ['l'],
+	i: ['i'],
+	p: ['p'],
+	s: ['s'],
+	u: ['u'],
+	m: ['m']
+};
+
+const unit = ({input, output, actions = [], opts = {}}) => t => {
+	const prompt = ipt(input, {...t.context.opts, ...opts}, t.context.prompt)
+		.then(result => {
+			t.deepEqual(result, output);
+		});
+	actions.forEach(i => t.context.prompt.ui.rl.input.emit.apply(t.context.prompt.ui.rl.input, ['keypress'].concat(i)));
+	const rl = actions[0] && actions[0][0] ? t.context.prompt.ui.rl.input : t.context.prompt.ui.rl;
+	rl.emit('line');
+	return prompt;
+};
+
+test('should build and select items from a basic list', unit({
+	input: 'foo\nbar',
+	output: ['foo']
+}));
+
+test('should build and select an item from a single item list', unit({
+	input: 'foo',
+	output: ['foo'],
+	actions: [key.down]
+}));
+
+test('should print error message when encounter problems', t => {
+	return t.throws(() => ipt(Buffer.from('jjj'), t.context.opts), TypeError);
 });
 
-test.cb('should build and select an item from a signle item list', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'foo');
-			t.end();
-		}
-	}, obj, 'foo');
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.emit('line');
+test('should use separator option to build a basic list', unit({
+	input: 'foo:bar',
+	output: ['foo'],
+	opts: {
+		sep: ':'
+	}
+}));
+
+test('should use weird separator option to build a long list', unit({
+	input: 'foo-:™£:-bar-:™£:-lorem-:™£:-ipsum-:™£:-dolor-:™£:-sit-:™£:-amet-:™£:-now',
+	output: ['ipsum'],
+	actions: [key.down, key.down, key.down],
+	opts: {
+		sep: '-:™£:-'
+	}
+}));
+
+test('should be able to use multiple items mode and select many', unit({
+	input: 'foo\nbar\nlorem\nipsum',
+	output: ['foo', 'lorem'],
+	actions: [key.space, key.down, key.down, key.space],
+	opts: {
+		multiple: true
+	}
+}));
+
+test('should trim each outputed line', unit({
+	input: '  foo\n  bar\n  lorem\n  ipsum',
+	output: ['foo', 'lorem'],
+	actions: [key.space, key.down, key.down, key.space],
+	opts: {
+		multiple: true
+	}
+}));
+
+test('should not trim result when using option', unit({
+	input: '  foo\n  bar\n  lorem\n  ipsum',
+	output: ['"  foo"', '"  lorem"'],
+	actions: [key.space, key.down, key.down, key.space],
+	opts: {
+		multiple: true,
+		'no-trim': true
+	}
+}));
+
+test('should be able to use autocomplete interface', unit({
+	input: 'foo\nbar\nlorem\nipsum',
+	output: ['lorem'],
+	actions: [key.l],
+	opts: {
+		autocomplete: true
+	}
+}));
+
+test('should be able to use autocomplete interface case insensitive', unit({
+	input: 'foo\nbar\nLOREM\nipsum',
+	output: ['LOREM'],
+	actions: [key.l],
+	opts: {
+		autocomplete: true
+	}
+}));
+
+test('should be able to use autocomplete interface typing complete word', unit({
+	input: 'foo\nbar\nLOREM\nipsum',
+	output: ['ipsum'],
+	actions: [key.i, key.p, key.s, key.u, key.m],
+	opts: {
+		autocomplete: true
+	}
+}));
+
+test('should be able to retrieve a valid path from an input', unit({
+	input: '?? foo\n?? bar\nM package.json',
+	output: ['package.json'],
+	actions: [key.down, key.down],
+	opts: {
+		'extract-path': true
+	}
+}));
+
+test('should not be able to retrieve an invalid path from an input', unit({
+	input: '?? foo\n?? bar\nM package.json',
+	output: [''],
+	opts: {
+		'extract-path': true
+	}
+}));
+
+test.serial('should copy selected item to clipboard on --copy option', t => {
+	const prompt = ipt('foo\nbar', {...t.context.opts, copy: true}, t.context.prompt)
+		.then(clipboard.read)
+		.then(data => {
+			t.is(data, 'foo');
+		});
+	t.context.prompt.ui.rl.emit('line');
+	return prompt;
 });
 
-test.cb('should successful exit on basic usage', t => {
-	const p = Object.assign({}, t.context.p, {
-		exit: code => {
-			t.is(code, 0);
-			t.end();
-		}
-	});
-	const prompt = ipt(p, t.context.ttys, {info: noop}, obj, 'foo\nbar', noop);
-	prompt.rl.emit('line');
-});
+test.serial('should output correct item when using clipboard', unit({
+	input: 'foo\nbar',
+	output: ['foo'],
+	opts: {
+		copy: true
+	}
+}));
 
-test.cb('should print error message when encounter problems', t => {
-	ipt(t.context.p, t.context.ttys, {info: noop}, obj, Buffer.from('jjj'), (e, msg) => {
-		t.is(msg, 'An error occurred while building the interactive interface');
-		t.end();
-	});
-});
-
-test.cb('should print original error message when debug option', t => {
-	ipt(t.context.p, t.context.ttys, {info: noop}, Object.assign({}, obj, {debug: true}), Buffer.from('jjj'), e => {
-		t.is(e.name, 'TypeError');
-		t.end();
-	});
-});
-
-test.cb('should use separator option to build a basic list', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'foo');
-			t.end();
-		}
-	}, Object.assign({}, obj, {separator: ':'}), 'foo:bar');
-	prompt.rl.emit('line');
-});
-
-test.cb('should use weird separator option to build a long list', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'ipsum');
-			t.end();
-		}
-	}, Object.assign({}, obj, {separator: '-:™£:-'}), 'foo-:™£:-bar-:™£:-lorem-:™£:-ipsum-:™£:-dolor-:™£:-sit-:™£:-amet-:™£:-now');
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.emit('line');
-});
-
-test.cb('should be able to use multiple items mode and select many', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'foo\nlorem');
-			t.end();
-		}
-	}, Object.assign({}, obj, {multiple: true}), 'foo\nbar\nlorem\nipsum');
-	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
-	prompt.rl.emit('line');
-});
-
-test.cb('should trim each outputed line', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'foo\nlorem');
-			t.end();
-		}
-	}, Object.assign({}, obj, {multiple: true}), '  foo\n  bar\n  lorem\n  ipsum');
-	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
-	prompt.rl.emit('line');
-});
-
-test.cb('should not trim result when using option', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, '"  foo"\n"  lorem"');
-			t.end();
-		}
-	}, Object.assign({}, obj, {multiple: true, 'no-trim': true}), '  foo\n  bar\n  lorem\n  ipsum'); // eslint-disable-line quote-props
-	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', ' ', {name: 'space'});
-	prompt.rl.emit('line');
-});
-
-test.cb('should be able to use autocomplete interface', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'lorem');
-			t.end();
-		}
-	}, Object.assign({}, obj, {autocomplete: true}), 'foo\nbar\nlorem\nipsum');
-	prompt.rl.input.emit('keypress', 'l');
-});
-
-test.cb('should be able to use autocomplete interface case insensitive', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'LOREM');
-			t.end();
-		}
-	}, Object.assign({}, obj, {autocomplete: true}), 'foo\nbar\nLOREM\nipsum');
-	prompt.rl.input.emit('keypress', 'l');
-});
-
-test.cb('should be able to use autocomplete interface typing complete word', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'ipsum');
-			t.end();
-		}
-	}, Object.assign({}, obj, {autocomplete: true}), 'foo\nbar\nLOREM\nipsum');
-	prompt.rl.input.emit('keypress', 'i');
-	prompt.rl.input.emit('keypress', 'p');
-	prompt.rl.input.emit('keypress', 's');
-	prompt.rl.input.emit('keypress', 'u');
-	prompt.rl.input.emit('keypress', 'm');
-});
-
-test.cb('should be able to retrieve a valid path from an input', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		error: console.log,
-		info: msg => {
-			t.is(msg, 'package.json');
-			t.end();
-		}
-	}, Object.assign({}, obj, {'extract-path': true, debug: true}), '?? foo\n?? bar\nM package.json');
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.input.emit('keypress', null, {name: 'down'});
-	prompt.rl.emit('line');
-});
-
-test.cb('should not be able to retrieve an invalid path from an input', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		error: console.log,
-		info: msg => {
-			t.is(msg, '');
-			t.end();
-		}
-	}, Object.assign({}, obj, {'extract-path': true, debug: true}), '?? foo\n?? bar\nM package.json');
-	prompt.rl.emit('line');
-});
-
-test.serial.cb('should copy selected item to clipboard on --copy option', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: () => {
-			clipboard.read()
-				.then(data => {
-					t.is(data, 'foo');
-					t.end();
-				})
-				.catch(err => {
-					t.fail(err);
-					t.end();
-				});
-		}
-	}, {copy: true}, 'foo\nbar');
-	prompt.rl.emit('line');
-});
-
-test.serial.cb('should output correct item when using clipboard', t => {
-	const prompt = ipt(t.context.p, t.context.ttys, {
-		info: msg => {
-			t.is(msg, 'foo');
-			t.end();
-		}
-	}, {}, 'foo\nbar');
-	prompt.rl.emit('line');
-});
-
-test.serial.cb('should never copy items if copy option is not active', t => {
-	clipboard.write('ipt is so cool')
+test.serial('should never copy items if copy option is not active', t => {
+	return clipboard.write('ipt is so cool')
 		.then(() => {
-			const prompt = ipt(t.context.p, t.context.ttys, {
-				info: msg => {
-					t.is(msg, 'foo');
-					clipboard.read()
-						.then(data => {
-							t.is(data, 'ipt is so cool');
-							t.end();
-						})
-						.catch(err => {
-							t.fail(err);
-							t.end();
-						});
-				}
-			}, obj, 'foo\nbar');
-			prompt.rl.emit('line');
+			const prompt = ipt('foo\nbar', t.context.opts, t.context.prompt);
+			t.context.prompt.ui.rl.emit('line');
+			return prompt;
 		})
-		.catch(err => {
-			t.fail(err);
-			t.end();
+		.then(() => clipboard.read())
+		.then(data => {
+			t.is(data, 'ipt is so cool');
 		});
 });
 
 // Disables clipboard cli test on travis
 if (!process.env.TRAVISTEST) {
 	test.serial.cb('should copy to clipboard from cli', t => {
-		const run = spawn('node', ['./src/cli.js', './test/fixtures/clipboard', '--no-ttys=true', '--copy', '--unquoted'], {
-			cwd
-		});
-		run.on('close', code => {
-			t.is(code, 0);
-			clipboard.read()
-				.then(data => {
-					t.is(data, 'ipt is awesome');
-					t.end();
-				})
-				.catch(err => {
+		const stdinfile = tempfile();
+		const stdin = fs.createWriteStream(stdinfile);
+		const runner = exec(
+			`node ./src/cli.js ./test/fixtures/clipboard --stdin-tty=${stdinfile} --copy --unquoted`, {cwd}, err => {
+				if (err) {
 					t.fail(err);
 					t.end();
-				});
-		});
-		run.stdin.write('\n');
+				} else {
+					clipboard.read()
+						.then(data => {
+							t.is(data, 'ipt is awesome');
+							t.end();
+						});
+				}
+			}
+		);
+		stdin.write('\n');
+		runner.stdin.end();
+		stdin.end();
 	});
 }
 

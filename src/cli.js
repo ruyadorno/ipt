@@ -3,6 +3,7 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const {promisify} = require('util');
 const getStdin = require('get-stdin');
 const reopenTTY = require('reopen-tty');
@@ -39,7 +40,10 @@ const {argv} = yargs
 	.string(['e', 's'])
 	.epilog('Visit https://github.com/ruyadorno/ipt for more info');
 
+const sep = argv.separator || os.EOL;
 const [filePath] = argv._;
+let stdin;
+let stdout;
 
 // Exits program execution on ESC or q keypress
 process.stdin.on('keypress', (ch, key) => {
@@ -48,24 +52,28 @@ process.stdin.on('keypress', (ch, key) => {
 	}
 });
 
-function startIpt(input) {
-	if (!input) {
-		return yargs.showHelp('log');
+function onForcedExit(e) {
+	if (argv.debug) {
+		console.error(e.toString());
 	}
+	if (stdin !== process.stdin) {
+		stdin.end();
+		stdin.destroy();
+	}
+	if (stdout !== process.stdout) {
+		stdout.end();
+		stdout.destroy();
+	}
+	// Release cursor by printing to stderr
+	console.warn('\u001B[?25h');
+	process.exit(0);
+}
 
-	Promise.all([
-		promisify(reopenTTY.stdin)(),
-		promisify(reopenTTY.stdout)(),
-		promisify(reopenTTY.stderr)()
-	])
-		.then(stdio => {
-			const [stdin, stdout, stderr] = stdio;
-			const getStdin = () => argv['stdin-tty'] ? fs.createReadStream(argv['stdin-tty']) : stdin;
-			require('.')(process, (argv['no-ttys'] ? process : {stdin: getStdin(), stdout, stderr}), console, argv, input, error);
-		})
-		.catch(err => {
-			console.error(argv.debug ? err : 'Error opening tty interaction');
-		});
+function defineErrorHandlers() {
+	process.on('SIGINT', onForcedExit);
+	process.on('SIGTERM', onForcedExit);
+	process.on('error', onForcedExit);
+	stdout.on('error', onForcedExit);
 }
 
 function error(e, msg) {
@@ -73,11 +81,37 @@ function error(e, msg) {
 	process.exit(1);
 }
 
+function end(data) {
+	console.log([].concat(data).join(sep));
+	process.exit(0);
+}
+
+function startIpt(input) {
+	if (!input) {
+		return yargs.showHelp('log');
+	}
+
+	Promise.all([
+		promisify(reopenTTY.stdin)(),
+		promisify(reopenTTY.stdout)()
+	])
+		.then(stdio => {
+			const [ttyStdin, ttyStdout] = stdio;
+			stdin = argv['no-ttys'] ? process.stdin : ttyStdin;
+			stdout = argv['no-ttyps'] ? process.stdout : ttyStdout;
+
+			defineErrorHandlers();
+
+			const getStdin = () => argv['stdin-tty'] ? fs.createReadStream(argv['stdin-tty']) : stdin;
+			return require('.')(input, {stdin: getStdin(), stdout, sep, ...argv});
+		})
+		.then(end)
+		.catch(onForcedExit);
+}
+
 (filePath ?
 	promisify(fs.readFile)(filePath, {
 		encoding: argv['file-encoding'] || 'utf8'
 	}) : getStdin())
 	.then(startIpt)
-	.catch(err => {
-		error(err, 'Error reading incoming data');
-	});
+	.catch(err => error(err, 'Error reading incoming data'));
