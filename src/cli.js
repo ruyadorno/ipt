@@ -51,13 +51,6 @@ const [filePath] = argv._;
 let stdin;
 let stdout;
 
-// Exits program execution on ESC or q keypress
-process.stdin.on("keypress", (ch, key) => {
-	if (key && (key.name === "escape" || key.name === "q")) {
-		process.exit();
-	}
-});
-
 function onForcedExit(e) {
 	if (argv.debug) {
 		console.error(e.toString());
@@ -75,11 +68,17 @@ function onForcedExit(e) {
 	process.exit(0);
 }
 
-function defineErrorHandlers() {
+function defineHandlers() {
 	process.on("SIGINT", onForcedExit);
 	process.on("SIGTERM", onForcedExit);
 	process.on("error", onForcedExit);
 	stdout.on("error", onForcedExit);
+	// Exits program execution on ESC
+	stdin.on("keypress", (ch, key) => {
+		if (key && key.name === "escape") {
+			process.exit(0);
+		}
+	});
 }
 
 function error(e, msg) {
@@ -103,7 +102,7 @@ function startIpt(input) {
 			stdin = argv["no-ttys"] ? process.stdin : ttyStdin;
 			stdout = argv["no-ttyps"] ? process.stdout : ttyStdout;
 
-			defineErrorHandlers();
+			defineHandlers();
 
 			const getStdin = () =>
 				argv["stdin-tty"] ? fs.createReadStream(argv["stdin-tty"]) : stdin;
