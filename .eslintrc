@@ -1,4 +1,7 @@
 {
-    "extends": "xo/esnext"
+  "extends": "prettier",
+  "parserOptions": {
+    "ecmaVersion": 2018
+  }
 }
 
