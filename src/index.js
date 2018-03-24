@@ -1,5 +1,6 @@
 "use strict";
 
+const cliWidth = require("cli-width");
 const clipboard = require("clipboardy").write;
 const inquirer = require("inquirer");
 const fuzzysearch = require("fuzzysearch");
@@ -28,6 +29,11 @@ function iPipeTo(
 		return str.indexOf(" ") > -1 ? `"${str}"` : str;
 	}
 
+	function trim(str) {
+		const maxWidth = cliWidth({ defaultWidth: 80, output: stdout }) - 9;
+		return str.length > maxWidth ? str.substr(0, maxWidth) + "..." : str;
+	}
+
 	const prompt = inquirer.createPromptModule({
 		input: stdin,
 		output: stdout
@@ -43,12 +49,8 @@ function iPipeTo(
 	const promptChoices = input
 		.split(sep)
 		.filter(item => item)
-		// Truncate displaying of anything greater than 80 chars
-		// Keep in mind that inquirer interface takes some room
-		// TODO: use cli-width instead:
-		// https://www.npmjs.com/package/cli-width
 		.map(item => ({
-			name: item.length > 71 ? item.substr(0, 71) + "..." : item,
+			name: trim(item),
 			value: item
 		}));
 	const promptTypes = {

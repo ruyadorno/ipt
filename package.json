@@ -33,6 +33,7 @@
     "menu"
   ],
   "dependencies": {
+    "cli-width": "^2.2.0",
     "clipboardy": "^1.2.2",
     "extract-path": "^1.0.0",
     "fuzzysearch": "^1.0.3",
