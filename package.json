@@ -12,7 +12,7 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "pretest": "xo",
+    "pretest": "eslint index.js",
     "test": "ava --tap"
   },
   "files": [
@@ -44,22 +44,16 @@
   },
   "devDependencies": {
     "ava": "^1.0.0-beta.3",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
     "lodash.template": "^4.4.0",
     "mock-require": "^3.0.1",
-    "tempfile": "^2.0.0",
-    "xo": "^0.20.3"
+    "prettier": "^1.11.1",
+    "tempfile": "^2.0.0"
   },
   "ava": {
     "babel": false,
     "compileEnhancements": false
-  },
-  "xo": {
-    "rules": {
-      "no-negated-condition": 0,
-      "ava/test-ended": 0,
-      "ava/prefer-async-await": 0,
-      "promise/prefer-await-to-then": 0
-    }
   },
   "license": "MIT"
 }
