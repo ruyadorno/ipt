@@ -39,6 +39,17 @@ function iPipeTo(
 		output: stdout
 	});
 
+	const opts = {
+		name: "stdin",
+		choices: input
+			.split(sep)
+			.filter(item => item)
+			.map(item => ({
+				name: trim(item),
+				value: item
+			}))
+	};
+
 	if (options.autocomplete) {
 		prompt.registerPrompt(
 			"autocomplete",
@@ -46,42 +57,33 @@ function iPipeTo(
 		);
 	}
 
-	const promptChoices = input
-		.split(sep)
-		.filter(item => item)
-		.map(item => ({
-			name: trim(item),
-			value: item
-		}));
 	const promptTypes = {
 		base: {
+			...opts,
 			type: "list",
-			name: "stdin",
-			message: "Select an item:",
-			choices: promptChoices
+			message: "Select an item:"
 		},
 		multiple: {
+			...opts,
 			type: "checkbox",
-			name: "stdin",
-			message: "Select multiple items:",
-			choices: promptChoices
+			message: "Select multiple items:"
 		},
 		autocomplete: {
+			...opts,
 			type: "autocomplete",
-			name: "stdin",
 			message: "Select an item:",
-			choices: promptChoices,
 			source: (answer, input) =>
 				new Promise(resolve => {
 					input = input || "";
 					resolve(
-						promptChoices.filter(item =>
+						opts.choices.filter(item =>
 							fuzzysearch(input.toLowerCase(), item.value.toLowerCase())
 						)
 					);
 				})
 		}
 	};
+
 	const result = prompt(
 		(options.multiple && promptTypes.multiple) ||
 			(options.autocomplete && promptTypes.autocomplete) ||
