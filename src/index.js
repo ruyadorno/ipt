@@ -41,6 +41,7 @@ function iPipeTo(
 
 	const opts = {
 		name: "stdin",
+		message: "Select an item:",
 		choices: input
 			.split(sep)
 			.filter(item => item)
@@ -60,8 +61,7 @@ function iPipeTo(
 	const promptTypes = {
 		base: {
 			...opts,
-			type: "list",
-			message: "Select an item:"
+			type: "list"
 		},
 		multiple: {
 			...opts,
@@ -71,7 +71,6 @@ function iPipeTo(
 		autocomplete: {
 			...opts,
 			type: "autocomplete",
-			message: "Select an item:",
 			source: (answer, input) =>
 				new Promise(resolve => {
 					input = input || "";
