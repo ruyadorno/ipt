@@ -50,7 +50,6 @@ test.beforeEach(t => {
 
 test.afterEach(t => {
 	t.context.p = null;
-	t.context.ttys = null;
 });
 
 const key = {

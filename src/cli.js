@@ -99,8 +99,8 @@ function startIpt(input) {
 	Promise.all([promisify(reopenTTY.stdin)(), promisify(reopenTTY.stdout)()])
 		.then(stdio => {
 			const [ttyStdin, ttyStdout] = stdio;
-			stdin = argv["no-ttys"] ? process.stdin : ttyStdin;
-			stdout = argv["no-ttyps"] ? process.stdout : ttyStdout;
+			stdin = ttyStdin;
+			stdout = ttyStdout;
 
 			defineHandlers();
 
