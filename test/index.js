@@ -309,7 +309,7 @@ const cli = ({ cmd, input = [], output, error }) => t => {
 				t.is(error, stderr.trim());
 				t.end();
 			} else {
-				t.is(output, stdout.trim());
+				t.is(output, String(stdout).trim());
 				t.end();
 			}
 		}
