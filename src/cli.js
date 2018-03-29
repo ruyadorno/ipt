@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 "use strict";
 
 const fs = require("fs");
@@ -48,8 +46,7 @@ const { argv } = yargs
 
 const sep = argv.separator || os.EOL;
 const [filePath] = argv._;
-let stdin;
-let stdout;
+let { stdin, stdout } = process;
 
 function onForcedExit(e) {
 	if (argv.debug) {
@@ -66,19 +63,6 @@ function onForcedExit(e) {
 	// Release cursor by printing to stderr
 	console.warn("\u001B[?25h");
 	process.exit(0);
-}
-
-function defineHandlers() {
-	process.on("SIGINT", onForcedExit);
-	process.on("SIGTERM", onForcedExit);
-	process.on("error", onForcedExit);
-	stdout.on("error", onForcedExit);
-	// Exits program execution on ESC
-	stdin.on("keypress", (ch, key) => {
-		if (key && key.name === "escape") {
-			process.exit(0);
-		}
-	});
 }
 
 function error(e, msg) {
@@ -102,7 +86,18 @@ function startIpt(input) {
 			stdin = ttyStdin;
 			stdout = ttyStdout;
 
-			defineHandlers();
+			// Defines event handlers
+			process.on("SIGINT", onForcedExit);
+			process.on("SIGTERM", onForcedExit);
+			process.on("error", onForcedExit);
+			stdout.on("error", onForcedExit);
+
+			// Exits program execution on ESC
+			stdin.on("keypress", (ch, key) => {
+				if (key && key.name === "escape") {
+					process.exit(0);
+				}
+			});
 
 			const getStdin = () =>
 				argv["stdin-tty"] ? fs.createReadStream(argv["stdin-tty"]) : stdin;

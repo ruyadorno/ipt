@@ -7,12 +7,12 @@
     "name": "Ruy Adorno",
     "url": "ruyadorno.com"
   },
-  "bin": "src/cli.js",
+  "bin": "node src/cli.js",
   "engines": {
     "node": ">=8.0.0"
   },
   "scripts": {
-    "pretest": "eslint index.js",
+    "pretest": "eslint src/*.js",
     "test": "ava --tap"
   },
   "files": [
@@ -40,7 +40,7 @@
     "get-stdin": "^6.0.0",
     "inquirer": "^5.0.1",
     "inquirer-autocomplete-prompt": "^0.12.1",
-    "reopen-tty": "^1.1.1",
+    "reopen-tty": "ruyadorno/reopen-tty#fix-win-fs-constants",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
