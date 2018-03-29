@@ -309,7 +309,12 @@ const cli = ({ cmd, input = [], output, error }) => t => {
 				t.is(error, stderr.trim());
 				t.end();
 			} else {
-				t.is(output, String(stdout).trim());
+				t.is(
+					output,
+					String(stdout)
+						.trim()
+						.replace(/\u0000A/, "")
+				);
 				t.end();
 			}
 		}
