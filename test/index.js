@@ -309,12 +309,7 @@ const cli = ({ cmd, input = [], output, error }) => t => {
 				t.is(error, stderr.trim());
 				t.end();
 			} else {
-				t.is(
-					output,
-					String(stdout)
-						.trim()
-						.replace(/\u0000A/, "")
-				);
+				t.is(output, stdout.trim());
 				t.end();
 			}
 		}
@@ -331,21 +326,8 @@ test.cb(
 			"src",
 			"cli.js"
 		)} --stdin-tty=<%= stdin %> -s , --debug`,
-		input: ["j", sep],
-		output: "peach"
-	})
-);
-
-test.cb(
-	"should run in autocomplete mode from cli",
-	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
-			"test",
-			"fixtures",
-			"simpletest"
-		)} --stdin-tty=<%= stdin %> -n -a --debug`,
-		input: ["l", "o", "r", sep],
-		output: "lorem"
+		input: [sep],
+		output: "banana"
 	})
 );
 
@@ -384,19 +366,6 @@ test.cb(
 			"inexistentfilename"
 		)}`,
 		error: "Error reading incoming data"
-	})
-);
-
-test.cb(
-	"should be able to use custom separators with --separator",
-	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
-			"test",
-			"fixtures",
-			"test.csv"
-		)} --stdin-tty=<%= stdin %> -n --separator=, --debug`,
-		input: ["j", " ", "\n"],
-		output: "oranges"
 	})
 );
 
@@ -455,19 +424,6 @@ test.cb(
 );
 
 test.cb(
-	"should run using multiple from cli",
-	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
-			"test",
-			"fixtures",
-			"simpletest"
-		)} --stdin-tty=<%= stdin %> -m`,
-		input: [" ", "j", "j", " ", sep],
-		output: `foo${sep}lorem`
-	})
-);
-
-test.cb(
 	"should run from cli using default platform separator",
 	process.platform === "win32"
 		? cli({
@@ -498,7 +454,49 @@ test.cb(
 			"fixtures",
 			"files"
 		)} -p --stdin-tty=<%= stdin %>`,
-		input: ["k", "\n"],
-		output: "README.md"
+		input: [sep],
+		output: "CODE_OF_CONDUCT.md"
 	})
 );
+
+// disabled tests on windows CI
+if (!process.env.APPVEYOR) {
+	test.cb(
+		"should be able to use custom separators with --separator",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"test.csv"
+			)} --stdin-tty=<%= stdin %> -n --separator=, --debug`,
+			input: ["j", " ", "\n"],
+			output: "oranges"
+		})
+	);
+
+	test.cb(
+		"should run in autocomplete mode from cli",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"simpletest"
+			)} --stdin-tty=<%= stdin %> -n -a --debug`,
+			input: ["l", "o", "r", sep],
+			output: "lorem"
+		})
+	);
+
+	test.cb(
+		"should run using multiple from cli",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"simpletest"
+			)} --stdin-tty=<%= stdin %> -m`,
+			input: [" ", "j", "j", " ", sep],
+			output: `foo${sep}lorem`
+		})
+	);
+}
