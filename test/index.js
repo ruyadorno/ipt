@@ -322,7 +322,7 @@ const cli = ({ cmd, input = [], output, error }) => t => {
 test.cb(
 	"should be able to pipe data from stdin",
 	cli({
-		cmd: `echo "banana,peach,apple" | node ${path.join(
+		cmd: `echo banana,peach,apple | node ${path.join(
 			"src",
 			"cli.js"
 		)} --stdin-tty=<%= stdin %> -s , --debug`,
@@ -398,32 +398,6 @@ test.cb(
 );
 
 test.cb(
-	"should read utf16 encode using --file-encoding option",
-	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
-			"test",
-			"fixtures",
-			"utf16encode"
-		)} --file-encoding=utf16le --stdin-tty=<%= stdin %>`,
-		input: [sep],
-		output: "lorem"
-	})
-);
-
-test.cb(
-	"should read ascii encode using --file-encoding option",
-	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
-			"test",
-			"fixtures",
-			"asciiencode"
-		)} --file-encoding=ascii --stdin-tty=<%= stdin %>`,
-		input: [sep],
-		output: "foo"
-	})
-);
-
-test.cb(
 	"should run from cli using default platform separator",
 	process.platform === "win32"
 		? cli({
@@ -461,6 +435,32 @@ test.cb(
 
 // disabled tests on windows CI
 if (!process.env.APPVEYOR) {
+	test.cb(
+		"should read utf16 encode using --file-encoding option",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"utf16encode"
+			)} --file-encoding=utf16le --stdin-tty=<%= stdin %>`,
+			input: [sep],
+			output: "lorem"
+		})
+	);
+
+	test.cb(
+		"should read ascii encode using --file-encoding option",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"asciiencode"
+			)} --file-encoding=ascii --stdin-tty=<%= stdin %>`,
+			input: [sep],
+			output: "foo"
+		})
+	);
+
 	test.cb(
 		"should be able to use custom separators with --separator",
 		cli({
