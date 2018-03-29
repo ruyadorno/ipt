@@ -1,8 +1,43 @@
-# iPipeTo [![NPM version](https://badge.fury.io/js/ipt.svg)](https://npmjs.org/package/ipt) [![Build Status](https://travis-ci.org/ruyadorno/ipt.svg?branch=master)](https://travis-ci.org/ruyadorno/ipt)
+<div align="center">
+	<br>
+	<img width="200" src="https://cdn.rawgit.com/ruyadorno/ipt/master/logo.svg" alt="ipt logo">
+	<br>
+	<br>
+	<br>
+</div>
+
+# iPipeTo
+
+[![NPM version](https://badge.fury.io/js/ipt.svg)](https://npmjs.org/package/ipt)
+[![Build Status](https://travis-ci.org/ruyadorno/ipt.svg?branch=master)](https://travis-ci.org/ruyadorno/ipt)
 
 > Interactive Pipe To: The missing cli interactive workflow
 
-![demo gif](http://i.imgur.com/0tASyP7.gif)
+<br />
+
+## Table of Contents
+
+- [About](#about)
+- [News](#newspaper-news)
+- [Examples](#examples)
+	- [Using-pipes-to-send-selected-value-to-next-command](#using-pipes-to-send-selected-value-to-next-command)
+	- [Using-the-multiple-choices-option](#using-the-multiple-choices-option)
+	- [Using-file-as-input-data](#using-file-as-input-data)
+	- [Using-the-copy-to-clipboard-feature](#using-the-copy-to-clipboard-feature)
+	- [More](#more)
+- [Install](#install)
+- [Awesome aliases Gallery](#awesome-aliases-gallery)
+- [Setup](#setup)
+	- [OSX](#osx)
+	- [Linux](#linux)
+- [Help](#help)
+- [Supported OS Terminals](#supported-os-terminals)
+- [Contributing](#contributing)
+- [Alternatives](#alternatives)
+- [Credits](#credits)
+- [License](#license)
+
+<br />
 
 ## About
 
@@ -13,10 +48,13 @@ Stop manually dragging your mouse around to copy output data from a terminal, us
 Selected data is also output to _stdout_ allowing for easily composing various workflows - Just create your custom alias!
 
 
+![demo gif](http://i.imgur.com/0tASyP7.gif)
+
 ## :newspaper: News
 
 - **v1.1.0:** Added autocomplete (or fuzzy finder) mode `ipt -a`
 
+<br />
 
 ## Examples
 
@@ -59,8 +97,21 @@ We just covered some basic examples here, if you want more advanced uses, check 
 
 > **iPipeTo** is the DIY kit for interactive interfaces in the command-line, plug whatever you want in, do something fun with the output!
 
+<br />
 
-## [Awesome workflow Gallery](gallery.sh)
+## Install
+
+Install it easily using **npm**:
+
+```sh
+$ npm install -g ipt
+```
+
+_Keep in mind that you'll need the latest **Node.js** LTS installed_
+
+<br />
+
+## [Awesome aliases Gallery](gallery.sh)
 
 Showcases some useful predefined workflow scripts for using **iPipeTo**:
 
@@ -89,42 +140,30 @@ alias ishow="git stash list | ipt --unquoted | cut -d ':' -f 1 | xargs git stash
 
 Got an awesome alias idea? [Send us a PR to add it to our gallery](gallery.sh)
 
+<br />
 
-### Beginners Help
-
-> Do you love all these fancy interactions from the examples above but don't quite follow all this unix jargon? Worry not, in the Awesome Gallery just above we have some common workflow scripts pre configured to be used as simple shell commands.
-
-> We also provide a simple example of how to get the commands in the Install section below.
-
-
-## Install
-
-Install it easily using **npm**:
-
-```sh
-$ npm install -g ipt
-```
-
-_Keep in mind that you'll need the latest **Node.js** LTS installed_
-
-### Beginners Setup
+## Setup
 
 So do you like the previous examples but are not super confident on how to configure these commands? Although I'd really recommend you to take a look at [how to do it yourself](http://askubuntu.com/questions/17536/how-do-i-create-a-permanent-bash-alias), below is a quick script for you to run in your terminal and have all of our [gallery](gallery.sh) scripts at once.
 
-#### OSX
+
+> Do you love all these fancy interactions from the examples above but don't quite follow all this unix jargon? Worry not, in the Awesome Gallery just above we have some common workflow scripts pre configured to be used as simple shell commands. Here's how to get them:
+
+### OSX
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/ruyadorno/ipt/master/gallery.sh >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
-#### Unix
+### Linux
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/ruyadorno/ipt/master/gallery.sh >> ~/.bashrc
 source ~/.bashrc
 ```
 
+<br />
 
 ## Help
 
@@ -148,6 +187,7 @@ Options:
 
 ```
 
+<br />
 
 ## Supported OS Terminals
 
@@ -166,32 +206,32 @@ Options:
 
 _\* Feedback wanted to confirm which features are available on a Windows cli_
 
-### Contributing
+<br />
+
+## Contributing
 
 **Bug fixes / code changes**: Please provide tests covering your changes, update docs accordingly and keep your changes to a single commit.
 
+<br />
 
 ## Alternatives
 
 As in any cool idea, iPipeTo is not the only available choice, here are some other cool implementations found in the wild:
 
-- [percol](https://github.com/mooz/percol)
-- [sentaku](https://github.com/rcmdnk/sentaku)
-- [pick](https://github.com/calleerlandsson/pick)
-- [fzf](https://github.com/junegunn/fzf)
-- [PathPicker](https://github.com/facebook/PathPicker)
+- [percol](https://github.com/mooz/percol) (python)
+- [sentaku](https://github.com/rcmdnk/sentaku) (shell script)
+- [pick](https://github.com/calleerlandsson/pick) (c)
+- [fzf](https://github.com/junegunn/fzf) (golang)
+- [PathPicker](https://github.com/facebook/PathPicker) (python)
 
+<br />
 
 ## Credits
 
-**iPipeTo** wouldn't be possible if not for the amazing [Inquirer.js](https://github.com/SBoudrias/Inquirer.js) that provides all these sweet interactive interfaces.
+- **iPipeTo** wouldn't be possible if not for the amazing [Inquirer.js](https://github.com/SBoudrias/Inquirer.js) that provides all these sweet interactive interfaces.
 
-### Created by
-
-[![Ruy Adorno](https://avatars.githubusercontent.com/u/220900?s=144)](http://ruyadorno.com) |
----|
-[Ruy Adorno](http://ruyadorno.com) |
+- The **iPipeTo** logo is a kind contribution from [Bruno Magal](http://brunomagal.com/)
 
 ## License
 
-MIT © [Ruy Adorno](http://ruyadorno.com)
+[MIT](LICENSE) © 2018 [Ruy Adorno](http://ruyadorno.com)
