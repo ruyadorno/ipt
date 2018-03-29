@@ -322,7 +322,7 @@ const cli = ({ cmd, input = [], output, error }) => t => {
 test.cb(
 	"should be able to pipe data from stdin",
 	cli({
-		cmd: `echo "banana,peach,apple" | ${path.join(
+		cmd: `echo "banana,peach,apple" | node ${path.join(
 			"src",
 			"cli.js"
 		)} --stdin-tty=<%= stdin %> -s , --debug`,

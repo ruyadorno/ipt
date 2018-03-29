@@ -7,7 +7,7 @@
     "name": "Ruy Adorno",
     "url": "ruyadorno.com"
   },
-  "bin": "src/cli.js",
+  "bin": "node src/cli.js",
   "engines": {
     "node": ">=8.0.0"
   },
