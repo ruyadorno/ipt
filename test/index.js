@@ -435,6 +435,7 @@ test.cb(
 
 // disabled tests on windows CI
 if (!process.env.APPVEYOR) {
+	// these tests fail due to trim no properly working on appveyor
 	test.cb(
 		"should read utf16 encode using --file-encoding option",
 		cli({
@@ -461,6 +462,7 @@ if (!process.env.APPVEYOR) {
 		})
 	);
 
+	// these tests seems to fail on appveyor due to inability to read input
 	test.cb(
 		"should be able to use custom separators with --separator",
 		cli({
