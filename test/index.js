@@ -32,6 +32,7 @@ const sep = require("os").EOL;
 const cwd = process.cwd();
 const helpMessageOutput = fs
 	.readFileSync(path.join(__dirname, "fixtures", "help"), { encoding: "utf8" })
+	.replace(/\\n/, sep)
 	.trim();
 
 // Mocks some context
