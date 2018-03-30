@@ -1,5 +1,7 @@
 <div align="center">
 	<br>
+	<br>
+	<br>
 	<img width="200" src="https://cdn.rawgit.com/ruyadorno/ipt/master/logo.svg" alt="ipt logo">
 	<br>
 	<br>
@@ -10,6 +12,8 @@
 
 [![NPM version](https://badge.fury.io/js/ipt.svg)](https://npmjs.org/package/ipt)
 [![Build Status](https://travis-ci.org/ruyadorno/ipt.svg?branch=master)](https://travis-ci.org/ruyadorno/ipt)
+[![License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/ruyadorno/ipt/master/LICENSE)
+[![Join the chat at https://gitter.im/ipipeto/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipipeto/Lobby)
 
 > Interactive Pipe To: The missing cli interactive workflow
 
@@ -25,9 +29,9 @@
 	- [Using-file-as-input-data](#using-file-as-input-data)
 	- [Using-the-copy-to-clipboard-feature](#using-the-copy-to-clipboard-feature)
 	- [More](#more)
-- [Install](#install)
-- [Awesome aliases Gallery](#awesome-aliases-gallery)
-- [Setup](#setup)
+- [Install](#arrow_down-install)
+- [Awesome aliases Gallery](#sunrise-awesome-aliases-gallery)
+- [Aliases setup](#aliases-setup)
 	- [OSX](#osx)
 	- [Linux](#linux)
 - [Help](#help)
@@ -99,9 +103,9 @@ We just covered some basic examples here, if you want more advanced uses, check 
 
 <br />
 
-## Install
+## :arrow_down: Install
 
-Install it easily using **npm**:
+Available on **npm**:
 
 ```sh
 $ npm install -g ipt
@@ -111,7 +115,7 @@ _Keep in mind that you'll need the latest **Node.js** LTS installed_
 
 <br />
 
-## [Awesome aliases Gallery](gallery.sh)
+## :sunrise: [Awesome aliases Gallery](gallery.sh)
 
 Showcases some useful predefined workflow scripts for using **iPipeTo**:
 
@@ -142,12 +146,9 @@ Got an awesome alias idea? [Send us a PR to add it to our gallery](gallery.sh)
 
 <br />
 
-## Setup
+## Aliases Setup
 
-So do you like the previous examples but are not super confident on how to configure these commands? Although I'd really recommend you to take a look at [how to do it yourself](http://askubuntu.com/questions/17536/how-do-i-create-a-permanent-bash-alias), below is a quick script for you to run in your terminal and have all of our [gallery](gallery.sh) scripts at once.
-
-
-> Do you love all these fancy interactions from the examples above but don't quite follow all this unix jargon? Worry not, in the Awesome Gallery just above we have some common workflow scripts pre configured to be used as simple shell commands. Here's how to get them:
+So do you like the previous examples but are not super confident on how to configure these commands? Although I'd really recommend you to take a look at [how to do it yourself](http://askubuntu.com/questions/17536/how-do-i-create-a-permanent-bash-alias), below are some quick scripts for you to run in your terminal and have all of our [gallery](gallery.sh) scripts at once:
 
 ### OSX
 
@@ -204,8 +205,6 @@ Options:
   - Powershell
   - Cygwin
 
-_\* Feedback wanted to confirm which features are available on a Windows cli_
-
 <br />
 
 ## Contributing
@@ -216,7 +215,7 @@ _\* Feedback wanted to confirm which features are available on a Windows cli_
 
 ## Alternatives
 
-As in any cool idea, iPipeTo is not the only available choice, here are some other cool implementations found in the wild:
+As in any cool idea, **iPipeTo** is not the only available choice, here are some other cool similar tools found in the wild:
 
 - [percol](https://github.com/mooz/percol) (python)
 - [sentaku](https://github.com/rcmdnk/sentaku) (shell script)
@@ -227,8 +226,6 @@ As in any cool idea, iPipeTo is not the only available choice, here are some oth
 <br />
 
 ## Credits
-
-- **iPipeTo** wouldn't be possible if not for the amazing [Inquirer.js](https://github.com/SBoudrias/Inquirer.js) that provides all these sweet interactive interfaces.
 
 - The **iPipeTo** logo is a kind contribution from [Bruno Magal](http://brunomagal.com/)
 
