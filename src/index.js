@@ -42,6 +42,7 @@ function iPipeTo(
 	const opts = {
 		name: "stdin",
 		message: "Select an item:",
+		pageSize: options.size || null,
 		choices: input
 			.split(sep)
 			.filter(item => item)
