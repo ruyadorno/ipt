@@ -35,7 +35,7 @@ function iPipeTo(
 
 	const opts = {
 		name: "stdin",
-		message: "Select an item:",
+		message: options.message || "Select an item:",
 		pageSize: options.size || null,
 		choices: []
 			.concat(input)
@@ -69,7 +69,7 @@ function iPipeTo(
 		multiple: {
 			...opts,
 			type: "checkbox",
-			message: "Select multiple items:"
+			message: options.message || "Select multiple items:"
 		},
 		autocomplete: {
 			...opts,
