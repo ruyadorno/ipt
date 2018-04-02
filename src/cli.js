@@ -20,6 +20,10 @@ const { argv } = yargs
 		"Uses cat to print contents of whatever item is selected"
 	)
 	.example("ipt ./file", "Builds the interactive list out of a given file")
+	.example(
+		"ls | ipt | sed",
+		"Builds an interactive interface and pipe stdout result"
+	)
 	.usage("Usage:\n  ipt [options] [<path>]")
 	.alias("a", "autocomplete")
 	.describe("a", "Starts in autocomplete mode")
@@ -34,6 +38,8 @@ const { argv } = yargs
 	.describe("h", "Shows this help message")
 	.alias("m", "multiple")
 	.describe("m", "Allows the selection of multiple items")
+	.alias("0", "null")
+	.describe("0", "Uses a null character as separator")
 	.alias("p", "extract-path")
 	.describe("p", "Returns only a valid path for each item")
 	.alias("s", "separator")
@@ -45,12 +51,19 @@ const { argv } = yargs
 	.alias("u", "unquoted")
 	.describe("u", "Force the output to be unquoted")
 	.alias("v", "version")
-	.boolean(["a", "c", "d", "h", "m", "t", "p", "u", "v"])
+	.boolean(["a", "c", "d", "h", "m", "0", "t", "p", "u", "v"])
 	.string(["e", "s"])
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
 
-const sep = argv.separator || os.EOL;
+// fixes parsing -0 arg
+const nullOptIndex = argv._.indexOf(-0);
+if (nullOptIndex > -1) {
+	argv.null = true;
+	argv._.splice(nullOptIndex, 1);
+}
+
+const sep = argv.null ? "\u0000" : argv.separator || os.EOL;
 const [filePath] = argv._;
 let { stdin, stdout } = process;
 
@@ -77,7 +90,7 @@ function error(e, msg) {
 }
 
 function end(data) {
-	console.log([].concat(data).join(sep));
+	process.stdout.write([].concat(data).join(sep) + (argv.null ? "" : "\n"));
 	process.exit(0);
 }
 

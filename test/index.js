@@ -439,6 +439,18 @@ if (!process.env.APPVEYOR) {
 	);
 
 	test.cb(
+		"should get valid results if using -0 (null char separator) option",
+		cli({
+			cmd: `find test/fixtures -print0 | node ${path.join(
+				"src",
+				"cli.js"
+			)} -a -0 --stdin-tty=<%= stdin %> | xargs -0 cat`,
+			input: ["s", "i", "m", "p", sep],
+			output: "foo\nbar\nlorem\nipsum\ndolor\nsit\namet"
+		})
+	);
+
+	test.cb(
 		"should run from cli using a weird separator",
 		cli({
 			cmd: `echo foo:™£:bar:™£:lorem:™£:ipsum:™£:dolor:™£:sit:™£:amet:™£:now | node ${path.join(
