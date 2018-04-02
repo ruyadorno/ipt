@@ -174,15 +174,18 @@ Usage:
   ipt [options] [<path>]
 
 Options:
+  -0, --null           Uses a null character as separator              [boolean]
   -a, --autocomplete   Starts in autocomplete mode                     [boolean]
   -c, --copy           Copy selected item(s) to clipboard              [boolean]
   -d, --debug          Prints to stderr any internal error             [boolean]
   -e, --file-encoding  Encoding for file <path>, defaults to utf8       [string]
   -h, --help           Shows this help message                         [boolean]
   -m, --multiple       Allows the selection of multiple items          [boolean]
-  -s, --separator      Separator to to split input into items           [string]
-  -t, --no-trim        Prevents trimming of the result strings         [boolean]
+  -M, --message        Replaces interface message                       [string]
   -p, --extract-path   Returns only a valid path for each item         [boolean]
+  -s, --separator      Separator to to split input into items           [string]
+  -S, --size           Amount of lines to display at once               [number]
+  -t, --no-trim        Prevents trimming of the result strings         [boolean]
   -u, --unquoted       Force the output to be unquoted                 [boolean]
   -v, --version        Show version number                             [boolean]
 
