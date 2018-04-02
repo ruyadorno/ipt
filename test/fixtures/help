@@ -2,6 +2,7 @@ Usage:
   ipt [options] [<path>]
 
 Options:
+  -0, --null           Uses a null character as separator              [boolean]
   -a, --autocomplete   Starts in autocomplete mode                     [boolean]
   -c, --copy           Copy selected item(s) to clipboard              [boolean]
   -d, --debug          Prints to stderr any internal error             [boolean]
@@ -19,6 +20,7 @@ Examples:
   ls | ipt         Builds an interactive interface out of current dir items
   cat $(ls | ipt)  Uses cat to print contents of whatever item is selected
   ipt ./file       Builds the interactive list out of a given file
+  ls | ipt | sed   Builds an interactive interface and pipe stdout result
 
 Visit https://github.com/ruyadorno/ipt for more info
 
