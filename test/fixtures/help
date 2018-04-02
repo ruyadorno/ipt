@@ -9,6 +9,7 @@ Options:
   -e, --file-encoding  Encoding for file <path>, defaults to utf8       [string]
   -h, --help           Shows this help message                         [boolean]
   -m, --multiple       Allows the selection of multiple items          [boolean]
+  -M, --message        Replaces interface message                       [string]
   -p, --extract-path   Returns only a valid path for each item         [boolean]
   -s, --separator      Separator to to split input into items           [string]
   -S, --size           Amount of lines to display at once               [number]

@@ -38,6 +38,8 @@ const { argv } = yargs
 	.describe("h", "Shows this help message")
 	.alias("m", "multiple")
 	.describe("m", "Allows the selection of multiple items")
+	.alias("M", "message")
+	.describe("M", "Replaces interface message")
 	.alias("0", "null")
 	.describe("0", "Uses a null character as separator")
 	.alias("p", "extract-path")
@@ -52,7 +54,7 @@ const { argv } = yargs
 	.describe("u", "Force the output to be unquoted")
 	.alias("v", "version")
 	.boolean(["a", "c", "d", "h", "m", "0", "t", "p", "u", "v"])
-	.string(["e", "s"])
+	.string(["e", "M", "s"])
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
 
