@@ -89,7 +89,7 @@ const unit = ({ input, output, actions = [], opts = {} }) => t => {
 test(
 	"should build and select items from a basic list",
 	unit({
-		input: `foo${sep}bar`,
+		input: ["foo", "bar"],
 		output: ["foo"]
 	})
 );
@@ -108,33 +108,9 @@ test("should print error message when encounter problems", t => {
 });
 
 test(
-	"should use separator option to build a basic list",
-	unit({
-		input: "foo:bar",
-		output: ["foo"],
-		opts: {
-			sep: ":"
-		}
-	})
-);
-
-test(
-	"should use weird separator option to build a long list",
-	unit({
-		input:
-			"foo-:™£:-bar-:™£:-lorem-:™£:-ipsum-:™£:-dolor-:™£:-sit-:™£:-amet-:™£:-now",
-		output: ["ipsum"],
-		actions: [key.down, key.down, key.down],
-		opts: {
-			sep: "-:™£:-"
-		}
-	})
-);
-
-test(
 	"should be able to use multiple items mode and select many",
 	unit({
-		input: `foo${sep}bar${sep}lorem${sep}ipsum`,
+		input: ["foo", "bar", "lorem", "ipsum"],
 		output: ["foo", "lorem"],
 		actions: [key.space, key.down, key.down, key.space],
 		opts: {
@@ -146,7 +122,7 @@ test(
 test(
 	"should trim each outputed line",
 	unit({
-		input: `  foo${sep}  bar${sep}  lorem${sep}  ipsum`,
+		input: ["  foo", "  bar", "  lorem", "  ipsum"],
 		output: ["foo", "lorem"],
 		actions: [key.space, key.down, key.down, key.space],
 		opts: {
@@ -158,7 +134,7 @@ test(
 test(
 	"should not trim result when using option",
 	unit({
-		input: `  foo${sep}  bar${sep}  lorem${sep}  ipsum`,
+		input: ["  foo", "  bar", "  lorem", "  ipsum"],
 		output: ['"  foo"', '"  lorem"'],
 		actions: [key.space, key.down, key.down, key.space],
 		opts: {
@@ -171,7 +147,7 @@ test(
 test(
 	"should be able to use autocomplete interface",
 	unit({
-		input: `foo${sep}bar${sep}lorem${sep}ipsum`,
+		input: ["foo", "bar", "lorem", "ipsum"],
 		output: ["lorem"],
 		actions: [key.l],
 		opts: {
@@ -183,7 +159,7 @@ test(
 test(
 	"should be able to use autocomplete interface case insensitive",
 	unit({
-		input: `foo${sep}bar${sep}LOREM${sep}ipsum`,
+		input: ["foo", "bar", "LOREM", "ipsum"],
 		output: ["LOREM"],
 		actions: [key.l],
 		opts: {
@@ -195,7 +171,7 @@ test(
 test(
 	"should be able to use autocomplete interface typing complete word",
 	unit({
-		input: `foo${sep}bar${sep}LOREM${sep}ipsum`,
+		input: ["foo", "bar", "LOREM", "ipsum"],
 		output: ["ipsum"],
 		actions: [key.i, key.p, key.s, key.u, key.m],
 		opts: {
@@ -207,7 +183,7 @@ test(
 test(
 	"should be able to retrieve a valid path from an input",
 	unit({
-		input: `?? foo${sep}?? bar${sep}M package.json`,
+		input: ["?? foo", "?? bar", "M package.json"],
 		output: ["package.json"],
 		actions: [key.down, key.down],
 		opts: {
@@ -219,7 +195,7 @@ test(
 test(
 	"should not be able to retrieve an invalid path from an input",
 	unit({
-		input: `?? foo${sep}?? bar${sep}M package.json`,
+		input: ["?? foo", "?? bar", "M package.json"],
 		output: [""],
 		opts: {
 			"extract-path": true
@@ -227,46 +203,6 @@ test(
 	})
 );
 
-test.serial("should copy selected item to clipboard on --copy option", t => {
-	const prompt = ipt(
-		`foo${sep}bar`,
-		{ ...t.context.opts, copy: true },
-		t.context.prompt
-	)
-		.then(clipboard.read)
-		.then(data => {
-			t.is(data, "foo");
-		});
-	t.context.prompt.ui.rl.emit("line");
-	return prompt;
-});
-
-test.serial(
-	"should output correct item when using clipboard",
-	unit({
-		input: `foo${sep}bar`,
-		output: ["foo"],
-		opts: {
-			copy: true
-		}
-	})
-);
-
-test.serial("should never copy items if copy option is not active", t => {
-	return clipboard
-		.write("ipt is so cool")
-		.then(() => {
-			const prompt = ipt(`foo${sep}bar`, t.context.opts, t.context.prompt);
-			t.context.prompt.ui.rl.emit("line");
-			return prompt;
-		})
-		.then(() => clipboard.read())
-		.then(data => {
-			t.is(data, "ipt is so cool");
-		});
-});
-
-// Disables clipboard cli test on travis
 if (!process.env.TRAVISTEST && !process.env.APPVEYOR) {
 	test.serial.cb("should copy to clipboard from cli", t => {
 		const stdinfile = tempfile();
@@ -499,6 +435,18 @@ if (!process.env.APPVEYOR) {
 			)} --stdin-tty=<%= stdin %> -m`,
 			input: [" ", "j", "j", " ", sep],
 			output: `foo${sep}lorem`
+		})
+	);
+
+	test.cb(
+		"should run from cli using a weird separator",
+		cli({
+			cmd: `echo foo:™£:bar:™£:lorem:™£:ipsum:™£:dolor:™£:sit:™£:amet:™£:now | node ${path.join(
+				"src",
+				"cli.js"
+			)} --stdin-tty=<%= stdin %> -s :™£:`,
+			input: [sep],
+			output: "foo"
 		})
 	);
 }

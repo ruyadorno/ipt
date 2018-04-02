@@ -5,6 +5,7 @@
 const fs = require("fs");
 const os = require("os");
 const { promisify } = require("util");
+const clipboard = require("clipboardy").write;
 const getStdin = require("get-stdin");
 const reopenTTY = require("reopen-tty");
 const yargs = require("yargs");
@@ -106,8 +107,16 @@ function startIpt(input) {
 
 			const getStdin = () =>
 				argv["stdin-tty"] ? fs.createReadStream(argv["stdin-tty"]) : stdin;
-			return require(".")(input, { stdin: getStdin(), stdout, sep, ...argv });
+			return require(".")(input.split(sep), {
+				stdin: getStdin(),
+				stdout,
+				...argv
+			});
 		})
+		.then(
+			answers =>
+				argv.copy ? clipboard(answers.join(sep)).then(() => answers) : answers
+		)
 		.then(end)
 		.catch(onForcedExit);
 }
