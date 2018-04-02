@@ -1,18 +1,12 @@
 "use strict";
 
 const cliWidth = require("cli-width");
-const clipboard = require("clipboardy").write;
 const inquirer = require("inquirer");
 const fuzzysearch = require("fuzzysearch");
 
 function iPipeTo(
 	input,
-	{
-		stdin = process.stdin,
-		stdout = process.stdout,
-		sep = require("os").EOL,
-		...options
-	},
+	{ stdin = process.stdin, stdout = process.stdout, ...options },
 	__prompt
 ) {
 	function formatResult(str) {
@@ -43,13 +37,21 @@ function iPipeTo(
 		name: "stdin",
 		message: "Select an item:",
 		pageSize: options.size || null,
-		choices: input
-			.split(sep)
+		choices: []
+			.concat(input)
 			.filter(item => item)
-			.map(item => ({
-				name: trim(item),
-				value: item
-			}))
+			.map(
+				item =>
+					typeof item === "string"
+						? {
+								name: trim(item),
+								value: item
+						  }
+						: {
+								name: trim(item.name),
+								value: item.value
+						  }
+			)
 	};
 
 	if (options.autocomplete) {
@@ -102,13 +104,7 @@ function iPipeTo(
 					? Promise.all(answers.map(require("extract-path")))
 					: answers
 		)
-		.then(answers => answers.map(formatResult))
-		.then(
-			answers =>
-				options.copy
-					? clipboard(answers.join(sep)).then(() => answers)
-					: answers
-		);
+		.then(answers => answers.map(formatResult));
 }
 
 module.exports = iPipeTo;
