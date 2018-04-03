@@ -190,6 +190,7 @@ Options:
   -a, --autocomplete   Starts in autocomplete mode                     [boolean]
   -c, --copy           Copy selected item(s) to clipboard              [boolean]
   -d, --debug          Prints to stderr any internal error             [boolean]
+  -D, --default        Select a default choice by its name              [string]
   -e, --file-encoding  Encoding for file <path>, defaults to utf8       [string]
   -h, --help           Shows this help message                         [boolean]
   -m, --multiple       Allows the selection of multiple items          [boolean]
