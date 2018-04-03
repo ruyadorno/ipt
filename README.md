@@ -55,7 +55,9 @@ Stop manually dragging your mouse around to copy output data from a terminal, us
 Selected data is also output to _stdout_ allowing for easily composing various workflows - Just create your custom alias!
 
 
+<p align="center">
 ![demo animation](https://cdn.rawgit.com/ruyadorno/ipt/master/demo.svg)
+</p>
 
 ## :newspaper: News
 
