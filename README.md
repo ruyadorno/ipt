@@ -15,7 +15,7 @@
 [![License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/ruyadorno/ipt/master/LICENSE)
 [![Join the chat at https://gitter.im/ipipeto/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipipeto/Lobby)
 
-> Interactive Pipe To: The missing cli interactive workflow
+> Interactive Pipe To: The Node.js cli interactive workflow
 
 <br />
 
@@ -23,17 +23,20 @@
 
 - [About](#about)
 - [News](#newspaper-news)
-- [Examples](#examples)
-	- [Using-pipes-to-send-selected-value-to-next-command](#using-pipes-to-send-selected-value-to-next-command)
-	- [Using-the-multiple-choices-option](#using-the-multiple-choices-option)
-	- [Using-file-as-input-data](#using-file-as-input-data)
-	- [Using-the-copy-to-clipboard-feature](#using-the-copy-to-clipboard-feature)
-	- [More](#more)
+- [Features](#heart_eyes-Features)
+	- [Reads from standard input, prints to standard output](#reads-from-standard-input-prints-to-standard-output)
+	- [Select multiple items](#select-multiple-items)
+	- [Fuzzysearch (autocomplete mode)](#fuzzysearch-autocomplete-mode)
+	- [Extract path from result](#extract-path-from-result)
+	- [Copy to clipboard](#copy-to-clipboard)
+	- [Customization](#customization)
+	- [Node.js based](#nodejs-based)
+- [Examples](#mag_right-examples)
+	- [Using Unix pipes to send selected value to next command](#using-unix-pipes-to-send-selected-value-to-next-command)
+	- [Using the multiple choices option](#using-the-multiple-choices-option)
+	- [Using file as input data](#using-file-as-input-data)
 - [Install](#arrow_down-install)
-- [Awesome aliases Gallery](#sunrise-awesome-aliases-gallery)
-- [Aliases setup](#aliases-setup)
-	- [OSX](#osx)
-	- [Linux](#linux)
+- [Awesome workflows](#sunrise-awesome-workflows)
 - [Help](#help)
 - [Supported OS Terminals](#supported-os-terminals)
 - [Contributing](#contributing)
@@ -56,50 +59,72 @@ Selected data is also output to _stdout_ allowing for easily composing various w
 
 ## :newspaper: News
 
+- **v2.0.0:**
+  - Added `-p` option for extracting path out of selected items
+  - Added `-M` option for customizing interface message
+  - Added `-0` option for better null char compatibility
+  - Added `-S` option for setting number of lines to be displayed
+  - Added a proper programmatic API
+  - Updated all dependencies to their latest versions
+  - **ipt** now requires node@8+
 - **v1.1.0:** Added autocomplete (or fuzzy finder) mode `ipt -a`
 
 <br />
 
-## Examples
+## :heart_eyes: Features
+
+### Reads from standard input, prints to standard output
+
+**iPipeTo** is inspired by the [Unix Pipeline](https://en.wikipedia.org/wiki/Pipeline_\(Unix\)) and is composable with any command line utility you already use and love.
+
+### Select multiple items
+
+The `-m` or `--multiple` flag allows you to select many items out of the interactive list instead of the standard "pick one" behavior.
+
+### Fuzzysearch (autocomplete mode)
+
+Using `-a` or `--autocomplete` option switchs the behavior of the interactive list to that of a fuzzysearch (or autocomplete) where options are narrowed as you type.
+
+### Extract path from result
+
+A convenient option that helps extract file system path values out of the selected item, very useful when manipulating verbose output. Use `-p` or `--extract-path` options.
+
+### Copy to clipboard
+
+The `-c` or `--copy` option allows you to copy the selected item value to clipboard. Makes for useful workflows where you may need that value somewhere else such as out of the terminal or in a manual command to type later.
+
+### Customization
+
+Customize your workflow by defining the separator to be used to generate the list (`-s` or `--separator` options), a custom message to display on the interactive interface (`-M` or `--message`) and much more. Make sure to take a look at the [Help](#help) section to learn about all the available options.
+
+### Node.js based
+
+All you need in order to run **ipt** is the [Node.js](https://nodejs.org/en/) runtime and [npm](https://www.npmjs.com/), if you have those you're already all set!
+
+<br />
+
+## :mag_right: Examples
 
 The default behavior of **ipt** is to allow for the selection of one item from the interactive list, once selected this item will be output to _stdout_, you can also use `-c` option to copy the result to your clipboard.
 
 
-### Using pipes to send selected value to next command
+### Using Unix pipes to send selected value to next command
 
-Here we get a simple list of branchs, pipe into `ipt` and pipe the selected item value to `git checkout` to checkout into the selected branch. `xargs` is needed to get the data from standard input and read it as an argument.
+Here we get a simple list of branchs `git branch -a`, pipe into `ipt` and pipe the selected item value to `git checkout` to checkout into the selected branch. `xargs` is needed to get the data from standard input and read it as an argument.
 
-![`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git](http://i.imgur.com/nOPBE4t.gif)
-
+![`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git](https://user-images.githubusercontent.com/220900/38227950-bcc70b18-36ce-11e8-9da0-709d8b8a1c51.png)
 
 ### Using the multiple choices option
 
 In the following example we list all the files from the folder `ls` and pipe that list into `ipt` only that this time we use the "multiple" flag `-m` that allows for selecting multiple items from a list. The selected items get piped to `trash` that deletes them.
 
-![`ls | ipt -m | xargs trash` selects multiple items from the menu and deletes them](http://i.imgur.com/iPYIfPj.gif)
-
+![`ls | ipt -m | xargs trash` selects multiple items from the menu and deletes them](https://user-images.githubusercontent.com/220900/38227949-bcb0012a-36ce-11e8-80a2-77247c86cb63.png)
 
 ### Using file as input data
 
-You can also read a file as source of input data instead of reading from the standard input, here we read from a TODO file and redirect the selected items to be written in a DONE file.
+You can also read a file as source of input data instead of reading from the standard input, here we read from a `TODO` file and redirect the selected items to be written in a `DONE` file.
 
-![`ipt -m TODO >> DONE` selects multiple lines from a file and append them to another one](http://i.imgur.com/9tJSyEi.gif)
-
-
-### Using the copy to clipboard feature
-
-In the example below we show a menu containing the local directories. The selected choice gets copy to clipboard and we can reuse the selected value later with ctrl/cmd + V.
-
-![`ls | ipt -c` select item from menu and then `cat` followed by `cmd+v`](http://i.imgur.com/rQFtMQY.gif)
-
-
----
-
-### More
-
-We just covered some basic examples here, if you want more advanced uses, check our [Gallery](gallery.sh) below.
-
-> **iPipeTo** is the DIY kit for interactive interfaces in the command-line, plug whatever you want in, do something fun with the output!
+![`ipt -m TODO >> DONE` selects multiple lines from a file and append them to another one](https://user-images.githubusercontent.com/220900/38227948-bc9ed77e-36ce-11e8-9e40-14c60fc32180.png)
 
 <br />
 
@@ -108,61 +133,22 @@ We just covered some basic examples here, if you want more advanced uses, check 
 Available on **npm**:
 
 ```sh
-$ npm install -g ipt
+npm install -g ipt
 ```
 
-_Keep in mind that you'll need the latest **Node.js** LTS installed_
+_Keep in mind that you'll need the latest **Node.js** LTS installed!_
 
 <br />
 
-## :sunrise: [Awesome aliases Gallery](gallery.sh)
+## :sunrise: Awesome workflows
 
 Showcases some useful predefined workflow scripts for using **iPipeTo**:
 
-```sh
-# irm: Selects files to delete from current folder (recommended to use trash instead of rm -rf)
-alias irm="ls | ipt -m | xargs rm -rf"
+- [itrash](https://github.com/ruyadorno/itrash): Selects files to delete from current folder
+- [git-iadd](https://github.com/ruyadorno/git-iadd): Interactive staging of selected changed files
+- [git-ishow](https://github.com/ruyadorno/git-ishow): Choose one git stash item to show
 
-# irebase: Interactive build a list of git commits from log and rebase from selected one
-alias irebase="git --no-pager log --oneline | ipt | cut -d ' ' -f 1 | xargs -o git rebase -i"
-
-# icheckout: Interactive git checkout a commit, similar to irebase
-alias icheckout="git --no-pager log --oneline | ipt | cut -d ' ' -f 1 | xargs git checkout"
-
-# iseek: Interactive browse folders, ctrl+c once you're done
-function iseek() {
-    cd "$(ls -a -d */ .. | ipt)"
-    iseek
-}
-
-# iadd: Interactive staging of selected changed files (faster than git add --patch)
-alias iadd='git status -s | sed s/^...// | ipt -m | xargs git add'
-
-# Choose one git stash to show.
-alias ishow="git stash list | ipt --unquoted | cut -d ':' -f 1 | xargs git stash show -u"
-```
-
-Got an awesome alias idea? [Send us a PR to add it to our gallery](gallery.sh)
-
-<br />
-
-## Aliases Setup
-
-So do you like the previous examples but are not super confident on how to configure these commands? Although I'd really recommend you to take a look at [how to do it yourself](http://askubuntu.com/questions/17536/how-do-i-create-a-permanent-bash-alias), below are some quick scripts for you to run in your terminal and have all of our [gallery](gallery.sh) scripts at once:
-
-### OSX
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/ruyadorno/ipt/master/gallery.sh >> ~/.bash_profile
-source ~/.bash_profile
-```
-
-### Linux
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/ruyadorno/ipt/master/gallery.sh >> ~/.bashrc
-source ~/.bashrc
-```
+Found an awesome workflow idea? Send us a PR to add it here!
 
 <br />
 
@@ -220,11 +206,11 @@ Options:
 
 As in any cool idea, **iPipeTo** is not the only available choice, here are some other cool similar tools found in the wild:
 
-- [percol](https://github.com/mooz/percol) (python)
-- [sentaku](https://github.com/rcmdnk/sentaku) (shell script)
-- [pick](https://github.com/calleerlandsson/pick) (c)
-- [fzf](https://github.com/junegunn/fzf) (golang)
-- [PathPicker](https://github.com/facebook/PathPicker) (python)
+- [percol](https://github.com/mooz/percol)
+- [sentaku](https://github.com/rcmdnk/sentaku)
+- [pick](https://github.com/calleerlandsson/pick)
+- [fzf](https://github.com/junegunn/fzf)
+- [PathPicker](https://github.com/facebook/PathPicker)
 
 <br />
 
