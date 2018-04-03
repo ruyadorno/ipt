@@ -56,7 +56,7 @@ Selected data is also output to _stdout_ allowing for easily composing various w
 
 
 <p align="center">
-![demo animation](https://cdn.rawgit.com/ruyadorno/ipt/master/demo.svg)
+<img alt="demo animation" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/demo.svg" />
 </p>
 
 ## :newspaper: News
