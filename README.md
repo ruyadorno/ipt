@@ -144,6 +144,7 @@ _Keep in mind that you'll need the latest **Node.js** LTS installed!_
 
 Showcases some useful predefined workflow scripts for using **iPipeTo**:
 
+- [ntl](https://github.com/ruyadorno/ntl): Interactive cli menu to list/run npm tasks
 - [itrash](https://github.com/ruyadorno/itrash): Selects files to delete from current folder
 - [git-iadd](https://github.com/ruyadorno/git-iadd): Interactive staging of selected changed files
 - [git-ishow](https://github.com/ruyadorno/git-ishow): Choose one git stash item to show
