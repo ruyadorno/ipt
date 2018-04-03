@@ -54,10 +54,14 @@ Stop manually dragging your mouse around to copy output data from a terminal, us
 
 Selected data is also output to _stdout_ allowing for easily composing various workflows - Just create your custom alias!
 
+<br />
+<br />
 
 <p align="center">
 <img alt="demo animation" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/demo.svg" />
 </p>
+
+<br />
 
 ## :newspaper: News
 
