@@ -28,6 +28,18 @@ function iPipeTo(
 		return str.length > maxWidth ? str.substr(0, maxWidth) + "..." : str;
 	}
 
+	function getDefaultChoices(promptType) {
+		if (promptType.type === 'list') {
+			return options.default;
+		}
+
+		if (promptType.type === 'checkbox') {
+			return options.default
+				.split(',')
+				.map(name => name.trim());
+		}
+	}
+
 	const prompt = inquirer.createPromptModule({
 		input: stdin,
 		output: stdout
@@ -86,11 +98,15 @@ function iPipeTo(
 		}
 	};
 
-	const result = prompt(
-		(options.multiple && promptTypes.multiple) ||
-			(options.autocomplete && promptTypes.autocomplete) ||
-			promptTypes.base
-	);
+	const promptType = (options.multiple && promptTypes.multiple) ||
+		(options.autocomplete && promptTypes.autocomplete) ||
+		promptTypes.base;
+
+	if (options.default) {
+		promptType.default = getDefaultChoices(promptType);
+	}
+
+	const result = prompt(promptType);
 
 	if (__prompt) {
 		__prompt.ui = result.ui;

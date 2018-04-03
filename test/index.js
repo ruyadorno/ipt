@@ -461,4 +461,30 @@ if (!process.env.APPVEYOR) {
 			output: "foo"
 		})
 	);
+
+	test.cb(
+		"should be able to specify a default selected option in a list",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"simpletest"
+			)} --stdin-tty=<%= stdin %> -D bar`,
+			input: ["k", "\n"],
+			output: 'foo'
+		})
+	);
+
+	test.cb(
+		"should be able to specify a list of default choices to select for multiple choices",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"simpletest"
+			)} --stdin-tty=<%= stdin %> -m -D lorem,ipsum,sit`,
+			input: ["j", " ", "j", "j", " ", sep],
+			output: `bar${sep}lorem${sep}sit`
+		})
+	);
 }

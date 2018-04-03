@@ -31,6 +31,8 @@ const { argv } = yargs
 	.describe("c", "Copy selected item(s) to clipboard")
 	.alias("d", "debug")
 	.describe("d", "Prints to stderr any internal error")
+	.alias("D", "default")
+	.describe("D", "Select a default choice by its name")
 	.alias("e", "file-encoding")
 	.describe("e", "Encoding for file <path>, defaults to utf8")
 	.help("h")
@@ -54,7 +56,7 @@ const { argv } = yargs
 	.describe("u", "Force the output to be unquoted")
 	.alias("v", "version")
 	.boolean(["a", "c", "d", "h", "m", "0", "t", "p", "u", "v"])
-	.string(["e", "M", "s"])
+	.string(["e", "M", "s", "D"])
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
 
