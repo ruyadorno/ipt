@@ -1,7 +1,7 @@
 {
   "name": "ipt",
   "version": "1.1.0",
-  "description": "iPipeTo - The missing shell interactive workflow",
+  "description": "iPipeTo - The Node.js cli interactive workflow",
   "repository": "ruyadorno/ipt",
   "author": {
     "name": "Ruy Adorno",
