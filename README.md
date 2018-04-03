@@ -118,21 +118,40 @@ The default behavior of **ipt** is to allow for the selection of one item from t
 
 Here we get a simple list of branchs `git branch -a`, pipe into `ipt` and pipe the selected item value to `git checkout` to checkout into the selected branch. `xargs` is needed to get the data from standard input and read it as an argument.
 
-![`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git](https://user-images.githubusercontent.com/220900/38227950-bcc70b18-36ce-11e8-9da0-709d8b8a1c51.png)
+<br />
+
+<p align="center">
+<img alt="`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/git-checkout.svg" />
+</p>
+
+<br/>
+<br/>
 
 ### Using the multiple choices option
 
 In the following example we list all the files from the folder `ls` and pipe that list into `ipt` only that this time we use the "multiple" flag `-m` that allows for selecting multiple items from a list. The selected items get piped to `trash` that deletes them.
 
-![`ls | ipt -m | xargs trash` selects multiple items from the menu and deletes them](https://user-images.githubusercontent.com/220900/38227949-bcb0012a-36ce-11e8-80a2-77247c86cb63.png)
+<br />
+
+<p align="center">
+<img alt="`ls | ipt -m | xargs rm` selects multiple items from the menu and deletes them" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/rm.svg" />
+</p>
+
+<br/>
+<br/>
 
 ### Using file as input data
 
 You can also read a file as source of input data instead of reading from the standard input, here we read from a `TODO` file and redirect the selected items to be written in a `DONE` file.
 
-![`ipt -m TODO >> DONE` selects multiple lines from a file and append them to another one](https://user-images.githubusercontent.com/220900/38227948-bc9ed77e-36ce-11e8-9e40-14c60fc32180.png)
-
 <br />
+
+<p align="center">
+<img alt="`ipt -m TODO >> DONE` selects multiple lines from a file and append them to another one" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/input.svg" />
+</p>
+
+<br/>
+<br/>
 
 ## :arrow_down: Install
 
