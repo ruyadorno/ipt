@@ -35,7 +35,7 @@ function iPipeTo(
 
 		if (promptType.type === 'checkbox') {
 			return options.default
-				.split(',')
+				.split(' ')
 				.map(name => name.trim());
 		}
 	}

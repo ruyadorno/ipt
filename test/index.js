@@ -482,7 +482,7 @@ if (!process.env.APPVEYOR) {
 				"test",
 				"fixtures",
 				"simpletest"
-			)} --stdin-tty=<%= stdin %> -m -D lorem,ipsum,sit`,
+			)} --stdin-tty=<%= stdin %> -m -D "lorem ipsum sit"`,
 			input: ["j", " ", "j", "j", " ", sep],
 			output: `bar${sep}lorem${sep}sit`
 		})
