@@ -471,7 +471,7 @@ if (!process.env.APPVEYOR) {
 				"simpletest"
 			)} --stdin-tty=<%= stdin %> -D bar`,
 			input: ["k", "\n"],
-			output: 'foo'
+			output: "foo"
 		})
 	);
 
