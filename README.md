@@ -65,6 +65,8 @@ Selected data is also output to _stdout_ allowing for easily composing various w
 
 ## :newspaper: News
 
+- **v2.1.0:**
+  - Added `-D` option for defining a pre-selected item in the list
 - **v2.0.0:**
   - Added `-p` option for extracting path out of selected items
   - Added `-M` option for customizing interface message
