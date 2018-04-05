@@ -32,7 +32,12 @@ const { argv } = yargs
 	.alias("d", "debug")
 	.describe("d", "Prints to stderr any internal error")
 	.alias("D", "default")
-	.describe("D", "Select a default choice by its name")
+	.describe("D", "Select a default choices by their name")
+	.alias("P", "default-separator")
+	.describe(
+		"P",
+		"Separator to to split default choices into items, defaults to the separator"
+	)
 	.alias("e", "file-encoding")
 	.describe("e", "Encoding for file <path>, defaults to utf8")
 	.help("h")
@@ -56,7 +61,7 @@ const { argv } = yargs
 	.describe("u", "Force the output to be unquoted")
 	.alias("v", "version")
 	.boolean(["a", "c", "d", "h", "m", "0", "t", "p", "u", "v"])
-	.string(["e", "M", "s", "D"])
+	.string(["e", "M", "s", "D", "P"])
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
 

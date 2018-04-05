@@ -1,5 +1,6 @@
 "use strict";
 
+const os = require("os");
 const cliWidth = require("cli-width");
 const inquirer = require("inquirer");
 const fuzzysearch = require("fuzzysearch");
@@ -29,14 +30,14 @@ function iPipeTo(
 	}
 
 	function getDefaultChoices(promptType) {
-		if (promptType.type === 'list') {
+		if (promptType.type === "list") {
 			return options.default;
 		}
 
-		if (promptType.type === 'checkbox') {
-			return options.default
-				.split(' ')
-				.map(name => name.trim());
+		if (promptType.type === "checkbox") {
+			return options.default.split(
+				options["default-separator"] || options.separator || os.EOL
+			);
 		}
 	}
 
@@ -98,7 +99,8 @@ function iPipeTo(
 		}
 	};
 
-	const promptType = (options.multiple && promptTypes.multiple) ||
+	const promptType =
+		(options.multiple && promptTypes.multiple) ||
 		(options.autocomplete && promptTypes.autocomplete) ||
 		promptTypes.base;
 
