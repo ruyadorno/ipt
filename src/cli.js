@@ -34,10 +34,7 @@ const { argv } = yargs
 	.alias("D", "default")
 	.describe("D", "Select a default choices by their name")
 	.alias("P", "default-separator")
-	.describe(
-		"P",
-		"Separator to to split default choices into items, defaults to the separator"
-	)
+	.describe( "P", "Separator element for default items")
 	.alias("e", "file-encoding")
 	.describe("e", "Encoding for file <path>, defaults to utf8")
 	.help("h")
@@ -72,7 +69,7 @@ if (nullOptIndex > -1) {
 	argv._.splice(nullOptIndex, 1);
 }
 
-const sep = argv.null ? "\u0000" : argv.separator || os.EOL;
+argv.separator = argv.null ? "\u0000" : argv.separator || os.EOL;
 const [filePath] = argv._;
 let { stdin, stdout } = process;
 
@@ -99,7 +96,7 @@ function error(e, msg) {
 }
 
 function end(data) {
-	process.stdout.write([].concat(data).join(sep) + (argv.null ? "" : "\n"));
+	process.stdout.write([].concat(data).join(argv.separator) + (argv.null ? "" : "\n"));
 	process.exit(0);
 }
 
@@ -129,7 +126,7 @@ function startIpt(input) {
 
 			const getStdin = () =>
 				argv["stdin-tty"] ? fs.createReadStream(argv["stdin-tty"]) : stdin;
-			return require(".")(input.split(sep), {
+			return require(".")(input.split(argv.separator), {
 				stdin: getStdin(),
 				stdout,
 				...argv
@@ -137,7 +134,7 @@ function startIpt(input) {
 		})
 		.then(
 			answers =>
-				argv.copy ? clipboard(answers.join(sep)).then(() => answers) : answers
+				argv.copy ? clipboard(answers.join(argv.separator)).then(() => answers) : answers
 		)
 		.then(end)
 		.catch(onForcedExit);

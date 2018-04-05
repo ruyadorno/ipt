@@ -36,7 +36,7 @@ function iPipeTo(
 
 		if (promptType.type === "checkbox") {
 			return options.default.split(
-				options["default-separator"] || options.separator || os.EOL
+				options["default-separator"] || options.separator
 			);
 		}
 	}

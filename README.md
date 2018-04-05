@@ -103,6 +103,10 @@ The `-c` or `--copy` option allows you to copy the selected item value to clipbo
 
 Customize your workflow by defining the separator to be used to generate the list (`-s` or `--separator` options), a custom message to display on the interactive interface (`-M` or `--message`) and much more. Make sure to take a look at the [Help](#help) section to learn about all the available options.
 
+### Default selected items
+
+Use the `-D` or `--default` option to determine which item(s) should be selected by default on the interactive list. The `-P` or `--default-separator` also allows for a custom char to be used to split these items (similar to `-s` option).
+
 ### Node.js based
 
 All you need in order to run **ipt** is the [Node.js](https://nodejs.org/en/) runtime and [npm](https://www.npmjs.com/), if you have those you're already all set!
@@ -191,8 +195,7 @@ Options:
   -c, --copy               Copy selected item(s) to clipboard          [boolean]
   -d, --debug              Prints to stderr any internal error         [boolean]
   -D, --default            Select a default choices by their name       [string]
-  -P, --default-separator  Separator to to split default choices into items,
-                           defaults to the separator                    [string]
+  -P, --default-separator  Separator element for default items          [string]
   -e, --file-encoding      Encoding for file <path>, defaults to utf8   [string]
   -h, --help               Shows this help message                     [boolean]
   -m, --multiple           Allows the selection of multiple items      [boolean]
