@@ -1,5 +1,6 @@
 "use strict";
 
+const os = require("os");
 const cliWidth = require("cli-width");
 const inquirer = require("inquirer");
 const fuzzysearch = require("fuzzysearch");
@@ -26,6 +27,18 @@ function iPipeTo(
 	function trim(str) {
 		const maxWidth = cliWidth({ defaultWidth: 80, output: stdout }) - 9;
 		return str.length > maxWidth ? str.substr(0, maxWidth) + "..." : str;
+	}
+
+	function getDefaultChoices(promptType) {
+		if (promptType.type === "list") {
+			return options.default;
+		}
+
+		if (promptType.type === "checkbox") {
+			return options.default.split(
+				options["default-separator"] || options.separator || os.EOL
+			);
+		}
 	}
 
 	const prompt = inquirer.createPromptModule({
@@ -86,11 +99,16 @@ function iPipeTo(
 		}
 	};
 
-	const result = prompt(
+	const promptType =
 		(options.multiple && promptTypes.multiple) ||
-			(options.autocomplete && promptTypes.autocomplete) ||
-			promptTypes.base
-	);
+		(options.autocomplete && promptTypes.autocomplete) ||
+		promptTypes.base;
+
+	if (options.default) {
+		promptType.default = getDefaultChoices(promptType);
+	}
+
+	const result = prompt(promptType);
 
 	if (__prompt) {
 		__prompt.ui = result.ui;

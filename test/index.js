@@ -461,4 +461,69 @@ if (!process.env.APPVEYOR) {
 			output: "foo"
 		})
 	);
+
+	test.cb(
+		"should be able to specify a default selected option in a list",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"simpletest"
+			)} --stdin-tty=<%= stdin %> -D bar`,
+			input: ["k", "\n"],
+			output: "foo"
+		})
+	);
+
+	test.cb(
+		"should be able to specify a list of default choices to select for multiple choices",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"simpletest"
+			)} --stdin-tty=<%= stdin %> -m -D "lorem${sep}ipsum${sep}sit"`,
+			input: ["j", " ", "j", "j", " ", sep],
+			output: `bar${sep}lorem${sep}sit`
+		})
+	);
+
+	test.cb(
+		"should be able to use ---default-separator to split multiple default choices",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"simpletest"
+			)} --stdin-tty=<%= stdin %> -m --default-separator=, -D "lorem,ipsum,sit"`,
+			input: ["j", " ", "j", "j", " ", sep],
+			output: `bar${sep}lorem${sep}sit`
+		})
+	);
+
+	test.cb(
+		"should be able use --separator as the default separator to split multiple default choices",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"test.csv"
+			)} --stdin-tty=<%= stdin %> -m --separator=, -D "banana,mangoes"`,
+			input: ["j", " ", sep],
+			output: `banana,oranges,mangoes`
+		})
+	);
+
+	test.cb(
+		"should be able override --separator with --default-separator to split multiple default choices",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				"test",
+				"fixtures",
+				"test.csv"
+			)} --stdin-tty=<%= stdin %> -m --separator=, --default-separator=: -D "banana:mangoes"`,
+			input: ["j", " ", sep],
+			output: `banana,oranges,mangoes`
+		})
+	);
 }
