@@ -153,7 +153,7 @@ You can also read a file as source of input data instead of reading from the sta
 <br />
 
 <p align="center">
-<img alt="`ipt -m TODO >> DONE` selects multiple lines from a file and append them to another one" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/input.svg" />
+<img alt="Selects multiple lines from a file and append them to another one" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/input.svg" />
 </p>
 
 <br/>
