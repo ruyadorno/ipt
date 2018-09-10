@@ -47,7 +47,7 @@
     "yargs": "^11.0.0"
   },
   "devDependencies": {
-    "ava": "^1.0.0-beta.3",
+    "ava": "^1.0.0-beta.8",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "lodash.template": "^4.4.0",
