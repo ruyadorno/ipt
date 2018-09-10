@@ -245,6 +245,7 @@ As in any cool idea, **iPipeTo** is not the only available choice, here are some
 - [pick](https://github.com/calleerlandsson/pick)
 - [fzf](https://github.com/junegunn/fzf)
 - [PathPicker](https://github.com/facebook/PathPicker)
+- [smenu](https://github.com/p-gen/smenu)
 
 <br />
 
