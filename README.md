@@ -179,6 +179,7 @@ Showcases some useful predefined workflow scripts for using **iPipeTo**:
 - [itrash](https://github.com/ruyadorno/itrash): Selects files to delete from current folder
 - [git-iadd](https://github.com/ruyadorno/git-iadd): Interactive staging of selected changed files
 - [git-ishow](https://github.com/ruyadorno/git-ishow): Choose one git stash item to show
+- [npmlist](https://github.com/hankchanocd/npmlist/tree/master): Fuzzy list everything with npm module
 
 Found an awesome workflow idea? Send us a PR to add it here!
 
