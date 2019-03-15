@@ -20,3 +20,8 @@ alias iadd='git status -s | sed s/^...// | ipt -m | xargs git add'
 # Choose one git stash to show.
 alias ishow="git stash list | ipt --unquoted | cut -d ':' -f 1 | xargs git stash show -u"
 
+# ibrew: Interactive browse Homebrew search result and choose what to install
+# Example: ibrew nvm
+function ibrew() {
+    brew search "$@" | ipt | xargs brew install
+}
