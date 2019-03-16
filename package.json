@@ -41,8 +41,8 @@
     "extract-path": "^1.0.0",
     "fuzzysearch": "^1.0.3",
     "get-stdin": "^6.0.0",
-    "inquirer": "^5.0.1",
-    "inquirer-autocomplete-prompt": "^0.12.1",
+    "inquirer": "^6.2.2",
+    "inquirer-autocomplete-prompt": "^1.0.1",
     "reopen-tty": "^1.1.2",
     "yargs": "^11.0.0"
   },
