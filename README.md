@@ -256,4 +256,4 @@ As in any cool idea, **iPipeTo** is not the only available choice, here are some
 
 ## License
 
-[MIT](LICENSE) © 2018 [Ruy Adorno](http://ruyadorno.com)
+[MIT](LICENSE) © 2019 [Ruy Adorno](http://ruyadorno.com)
