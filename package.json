@@ -37,10 +37,10 @@
   ],
   "dependencies": {
     "cli-width": "^2.2.0",
-    "clipboardy": "^1.2.2",
+    "clipboardy": "^2.0.0",
     "extract-path": "^1.0.0",
     "fuzzysearch": "^1.0.3",
-    "get-stdin": "^6.0.0",
+    "get-stdin": "^7.0.0",
     "inquirer": "^6.2.2",
     "inquirer-autocomplete-prompt": "^1.0.1",
     "reopen-tty": "^1.1.2",
@@ -53,7 +53,7 @@
     "lodash.template": "^4.4.0",
     "mock-require": "^3.0.1",
     "prettier": "^1.11.1",
-    "tempfile": "^2.0.0"
+    "tempfile": "^3.0.0"
   },
   "ava": {
     "babel": false,
