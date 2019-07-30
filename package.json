@@ -50,7 +50,7 @@
     "ava": "^2.2.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
-    "lodash.template": "^4.4.0",
+    "lodash.template": "^4.5.0",
     "mock-require": "^3.0.1",
     "prettier": "^1.11.1",
     "tempfile": "^3.0.0"
