@@ -37,22 +37,22 @@
   ],
   "dependencies": {
     "cli-width": "^2.2.0",
-    "clipboardy": "^2.0.0",
+    "clipboardy": "^2.1.0",
     "extract-path": "^1.0.0",
     "fuzzysearch": "^1.0.3",
     "get-stdin": "^7.0.0",
-    "inquirer": "^6.2.2",
+    "inquirer": "^7.0.0",
     "inquirer-autocomplete-prompt": "^1.0.1",
     "reopen-tty": "^1.1.2",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
-    "ava": "^2.2.0",
-    "eslint": "^6.1.0",
-    "eslint-config-prettier": "^6.0.0",
+    "ava": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
     "lodash.template": "^4.5.0",
     "mock-require": "^3.0.1",
-    "prettier": "^1.11.1",
+    "prettier": "^1.18.2",
     "tempfile": "^3.0.0"
   },
   "ava": {
