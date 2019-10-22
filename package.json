@@ -44,12 +44,12 @@
     "inquirer": "^7.0.0",
     "inquirer-autocomplete-prompt-ipt": "^2.0.0",
     "reopen-tty": "^1.1.2",
-    "yargs": "^14.0.0"
+    "yargs": "^14.2.0"
   },
   "devDependencies": {
     "ava": "^2.4.0",
     "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.3.0",
+    "eslint-config-prettier": "^6.4.0",
     "lodash.template": "^4.5.0",
     "mock-require": "^3.0.1",
     "prettier": "^1.18.2",
