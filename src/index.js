@@ -70,7 +70,7 @@ function iPipeTo(
 	if (options.autocomplete) {
 		prompt.registerPrompt(
 			"autocomplete",
-			require("inquirer-autocomplete-prompt")
+			require("inquirer-autocomplete-prompt-ipt")
 		);
 	}
 
