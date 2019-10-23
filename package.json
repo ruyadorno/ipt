@@ -11,7 +11,7 @@
   "main": "src/index.js",
   "man": "./man/doc.1",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10"
   },
   "scripts": {
     "pretest": "eslint src/*.js",
