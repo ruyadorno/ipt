@@ -9,7 +9,7 @@
   },
   "bin": "src/cli.js",
   "main": "src/index.js",
-  "man": "./man/doc.1",
+  "man": "./man/man1/ipt.1",
   "engines": {
     "node": ">=10"
   },
