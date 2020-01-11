@@ -35,7 +35,7 @@ function iPipeTo(
 
 		let attempts = 0
 		while (stringWidth(str) > maxWidth) {
-			// TODO trim until shorter than maxWidth
+			// trim until shorter than maxWidth
 			str = str.substr(0, maxWidth - ++attempts)
 		}
 		str += "..."
