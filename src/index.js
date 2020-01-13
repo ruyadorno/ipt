@@ -5,6 +5,12 @@ const cliWidth = require("cli-width");
 const inquirer = require("inquirer");
 const fuzzysearch = require("fuzzysearch");
 
+/* get actual width of string
+ * some text ex. 夢 are 2 characters wide but still 1 character
+ * in length.
+ */
+const stringWidth = require("string-width")
+
 function iPipeTo(
 	input,
 	{ stdin = process.stdin, stdout = process.stdout, ...options },
@@ -26,7 +32,14 @@ function iPipeTo(
 
 	function trim(str) {
 		const maxWidth = cliWidth({ defaultWidth: 80, output: stdout }) - 9;
-		return str.length > maxWidth ? str.substr(0, maxWidth) + "..." : str;
+
+		let attempts = 0
+		while (stringWidth(str) > maxWidth) {
+			// trim until shorter than maxWidth
+			str = str.substr(0, maxWidth - ++attempts)
+		}
+		str += "..."
+		return str
 	}
 
 	function getDefaultChoices(promptType) {
