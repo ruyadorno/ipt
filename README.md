@@ -43,6 +43,7 @@
 - [Alternatives](#alternatives)
 - [Credits](#credits)
 - [License](#license)
+- [Product Roadmap](#roadmap)
 
 <br />
 
@@ -257,3 +258,7 @@ As in any cool idea, **iPipeTo** is not the only available choice, here are some
 ## License
 
 [MIT](LICENSE) © 2019 [Ruy Adorno](http://ruyadorno.com)
+
+## :roadmap: Product Roadmap
+
+Are you wondering what can you do or how would you start contributing on the IPT's future? Look at our [Roadmap document](./ROADMAP.md) about the next features
