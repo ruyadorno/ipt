@@ -41,9 +41,9 @@
 - [Supported OS Terminals](#supported-os-terminals)
 - [Contributing](#contributing)
 - [Alternatives](#alternatives)
+- [Roadmap](#roadmap)
 - [Credits](#credits)
 - [License](#license)
-- [Product Roadmap](#roadmap)
 
 <br />
 
@@ -251,6 +251,12 @@ As in any cool idea, **iPipeTo** is not the only available choice, here are some
 
 <br />
 
+## Roadmap
+
+Are you wondering what can you do or how would you start contributing to iPipeTo's future? Take a look at our [Roadmap document](./ROADMAP.md) to find out about what's planned ahead and what currently needs help.
+
+<br />
+
 ## Credits
 
 - The **iPipeTo** logo is a kind contribution from [Bruno Magal](http://brunomagal.com/)
@@ -258,7 +264,3 @@ As in any cool idea, **iPipeTo** is not the only available choice, here are some
 ## License
 
 [MIT](LICENSE) © 2019 [Ruy Adorno](http://ruyadorno.com)
-
-## :roadmap: Product Roadmap
-
-Are you wondering what can you do or how would you start contributing on the IPT's future? Look at our [Roadmap document](./ROADMAP.md) about the next features
