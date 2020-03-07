@@ -33,12 +33,15 @@ function iPipeTo(
 	function trim(str) {
 		const maxWidth = cliWidth({ defaultWidth: 80, output: stdout }) - 9;
 
-		let attempts = 0
-		while (stringWidth(str) > maxWidth) {
-			// trim until shorter than maxWidth
-			str = str.substr(0, maxWidth - ++attempts)
+		if (str.length > maxWidth) {
+			let attempts = 0
+			while (stringWidth(str) > maxWidth) {
+				// trim until shorter than maxWidth
+				str = str.substr(0, maxWidth - ++attempts)
+			}
+			str += "..."
 		}
-		str += "..."
+
 		return str
 	}
 
