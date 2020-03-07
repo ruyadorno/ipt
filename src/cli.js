@@ -57,12 +57,14 @@ const { argv } = yargs
 	.alias("u", "unquoted")
 	.describe("u", "Force the output to be unquoted")
 	.alias("v", "version")
-	.boolean(["a", "c", "d", "h", "m", "0", "t", "p", "u", "v"])
+	.boolean(["0", "a", "c", "d", "h", "m", "0", "t", "p", "u", "v"])
 	.string(["e", "M", "s", "D", "P"])
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
 
 // fixes parsing -0 arg
+// TODO: remove in case https://github.com/yargs/yargs-parser/pull/255
+// gets accepted
 const nullOptIndex = argv._.indexOf(-0);
 if (nullOptIndex > -1) {
 	argv.null = true;
