@@ -317,8 +317,6 @@ test.cb(
 	})
 );
 
-/* SKIP: currently failing because of:
- * https://github.com/yargs/yargs/pull/1493
 test.cb(
 	"should display help message on empty invocation",
 	cli({
@@ -334,7 +332,6 @@ test.cb(
 		output: helpMessageOutput
 	})
 );
-*/
 
 test.cb(
 	"should run from cli using default platform separator",

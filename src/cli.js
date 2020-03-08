@@ -62,14 +62,6 @@ const { argv } = yargs
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
 
-// fixes parsing -0 arg
-// TODO: remove in case https://github.com/yargs/yargs-parser/pull/255
-// gets accepted
-const nullOptIndex = argv._.indexOf(-0);
-if (nullOptIndex > -1) {
-	argv.null = true;
-	argv._.splice(nullOptIndex, 1);
-}
 
 argv.separator = argv.null ? "\u0000" : argv.separator || os.EOL;
 const [filePath] = argv._;

@@ -45,7 +45,7 @@
     "inquirer-autocomplete-prompt-ipt": "^2.0.0",
     "reopen-tty": "^1.1.2",
     "string-width": "~4.2.0",
-    "yargs": "^15.0.2"
+    "yargs": "^15.3.0-beta.1"
   },
   "devDependencies": {
     "ava": "^2.4.0",
