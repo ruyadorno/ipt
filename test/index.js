@@ -104,7 +104,7 @@ test(
 );
 
 test("should print error message when encounter problems", t => {
-	return t.throws(() => ipt(Buffer.from("jjj"), t.context.opts), TypeError);
+	return t.throws(() => ipt(Buffer.from("jjj"), t.context.opts), {instanceOf: TypeError});
 });
 
 test(
