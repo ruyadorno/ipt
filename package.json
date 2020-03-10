@@ -41,24 +41,20 @@
     "extract-path": "^2.0.0",
     "fuzzysearch": "^1.0.3",
     "get-stdin": "^7.0.0",
-    "inquirer": "=7.0.4",
+    "inquirer": "^7.1.0",
     "inquirer-autocomplete-prompt-ipt": "^2.0.0",
     "reopen-tty": "^1.1.2",
     "string-width": "~4.2.0",
-    "yargs": "^15.3.0-beta.1"
+    "yargs": "^15.3.0"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "ava": "^3.5.0",
     "eslint": "^6.7.0",
     "eslint-config-prettier": "^6.7.0",
     "lodash.template": "^4.5.0",
     "mock-require": "^3.0.1",
     "prettier": "^1.19.1",
     "tempfile": "^3.0.0"
-  },
-  "ava": {
-    "babel": false,
-    "compileEnhancements": false
   },
   "license": "MIT"
 }
