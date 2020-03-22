@@ -259,7 +259,7 @@ Are you wondering what can you do or how would you start contributing to iPipeTo
 
 ## Credits
 
-- The **iPipeTo** logo is a kind contribution from [Bruno Magal](http://brunomagal.com/)
+- The **iPipeTo** logo is a kind contribution from [Bruno Magal](https://www.behance.net/brunomagalhaes)
 
 ## License
 
