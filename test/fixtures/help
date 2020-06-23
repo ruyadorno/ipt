@@ -11,6 +11,7 @@ Options:
   -e, --file-encoding      Encoding for file <path>, defaults to utf8   [string]
   -h, --help               Shows this help message                     [boolean]
   -m, --multiple           Allows the selection of multiple items      [boolean]
+  -o, --ordered            Selects multiple items in order             [boolean]
   -M, --message            Replaces interface message                   [string]
   -p, --extract-path       Returns only a valid path for each item     [boolean]
   -s, --separator          Separator to to split input into items       [string]
@@ -26,4 +27,3 @@ Examples:
   ls | ipt | sed   Builds an interactive interface and pipe stdout result
 
 Visit https://github.com/ruyadorno/ipt for more info
-

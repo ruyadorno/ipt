@@ -54,6 +54,7 @@ test.afterEach(t => {
 });
 
 const key = {
+	up: [null, { name: "up" }],
 	down: [null, { name: "down" }],
 	space: [null, { name: "space" }],
 	l: ["l"],
@@ -140,6 +141,18 @@ test(
 		opts: {
 			multiple: true,
 			"no-trim": true
+		}
+	})
+);
+
+test(
+	"should be able to use multiple ordered items mode and select many",
+	unit({
+		input: ["foo", "bar", "lorem", "ipsum"],
+		output: ["lorem", "foo"],
+		actions: [key.down, key.down, key.space, key.up, key.up, key.space],
+		opts: {
+			ordered: true
 		}
 	})
 );

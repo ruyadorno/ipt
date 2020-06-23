@@ -42,6 +42,8 @@ const { argv } = yargs
 	.describe("h", "Shows this help message")
 	.alias("m", "multiple")
 	.describe("m", "Allows the selection of multiple items")
+	.alias("o", "ordered")
+	.describe("o", "Selects multiple items in order")
 	.alias("M", "message")
 	.describe("M", "Replaces interface message")
 	.alias("0", "null")
@@ -57,7 +59,7 @@ const { argv } = yargs
 	.alias("u", "unquoted")
 	.describe("u", "Force the output to be unquoted")
 	.alias("v", "version")
-	.boolean(["0", "a", "c", "d", "h", "m", "0", "t", "p", "u", "v"])
+	.boolean(["0", "a", "c", "d", "h", "m", "o", "0", "t", "p", "u", "v"])
 	.string(["e", "M", "s", "D", "P"])
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
