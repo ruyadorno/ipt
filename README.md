@@ -59,13 +59,15 @@ Selected data is also output to _stdout_ allowing for easily composing various w
 <br />
 
 <p align="center">
-<img alt="demo animation" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/demo.svg" />
+<img alt="demo animation" width="600" src="https://ruyadorno.github.io/svg-demos/ipt-demos/demo.svg" />
 </p>
 
 <br />
 
 ## :newspaper: News
 
+- **v3.1.0:**
+  - Added `-o` option for ordered multiple choice selection
 - **v2.1.0:**
   - Added `-D` option for defining a pre-selected item in the list
 - **v2.0.0:**
@@ -128,7 +130,7 @@ Here we get a simple list of branchs `git branch -a`, pipe into `ipt` and pipe t
 <br />
 
 <p align="center">
-<img alt="`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/git-checkout.svg" />
+<img alt="`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git" width="600" src="https://ruyadorno.github.io/svg-demos/ipt-demos/input.svg" />
 </p>
 
 <br/>
@@ -141,11 +143,13 @@ In the following example we list all the files from the folder `ls` and pipe tha
 <br />
 
 <p align="center">
-<img alt="`ls | ipt -m | xargs rm` selects multiple items from the menu and deletes them" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/rm.svg" />
+<img alt="`ls | ipt -m | xargs rm` selects multiple items from the menu and deletes them" width="600" src="https://ruyadorno.github.io/svg-demos/ipt-demos/multiple.svg" />
 </p>
 
 <br/>
 <br/>
+
+**NOTE:** An ordered multiple choice menu is available when using the `-o` OR `--ordered` option
 
 ### Using file as input data
 
@@ -154,7 +158,7 @@ You can also read a file as source of input data instead of reading from the sta
 <br />
 
 <p align="center">
-<img alt="Selects multiple lines from a file and append them to another one" width="600" src="https://cdn.rawgit.com/ruyadorno/ipt/master/example/input.svg" />
+<img alt="Selects multiple lines from a file and append them to another one" width="600" src="https://ruyadorno.github.io/svg-demos/ipt-demos/input.svg" />
 </p>
 
 <br/>
@@ -203,6 +207,7 @@ Options:
   -e, --file-encoding      Encoding for file <path>, defaults to utf8   [string]
   -h, --help               Shows this help message                     [boolean]
   -m, --multiple           Allows the selection of multiple items      [boolean]
+  -o, --ordered            Selects multiple items in order             [boolean]
   -M, --message            Replaces interface message                   [string]
   -p, --extract-path       Returns only a valid path for each item     [boolean]
   -s, --separator          Separator to to split input into items       [string]
