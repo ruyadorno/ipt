@@ -50,7 +50,7 @@ function iPipeTo(
 			return options.default;
 		}
 
-		if (promptType.type === "checkbox") {
+		if (promptType.type === "checkbox" || promptType.type === "ordinal") {
 			return options.default.split(
 				options["default-separator"] || options.separator
 			);
@@ -90,6 +90,13 @@ function iPipeTo(
 		);
 	}
 
+	if (options.ordered) {
+		prompt.registerPrompt(
+			"ordinal",
+			require("inquirer-ordinal-prompt").default
+		);
+	}
+
 	const promptTypes = {
 		base: {
 			...opts,
@@ -99,6 +106,11 @@ function iPipeTo(
 			...opts,
 			type: "checkbox",
 			message: options.message || "Select multiple items:"
+		},
+		ordered: {
+			...opts,
+			type: "ordinal",
+			message: options.message || "Select multiple items in order:"
 		},
 		autocomplete: {
 			...opts,
@@ -116,6 +128,7 @@ function iPipeTo(
 	};
 
 	const promptType =
+		(options.ordered && promptTypes.ordered) ||
 		(options.multiple && promptTypes.multiple) ||
 		(options.autocomplete && promptTypes.autocomplete) ||
 		promptTypes.base;
