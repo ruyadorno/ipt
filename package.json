@@ -38,20 +38,20 @@
     "menu"
   ],
   "dependencies": {
-    "cli-width": "^2.2.0",
-    "clipboardy": "^2.1.0",
+    "cli-width": "^3.0.0",
+    "clipboardy": "^2.3.0",
     "extract-path": "^2.0.0",
     "fuzzysearch": "^1.0.3",
-    "get-stdin": "^7.0.0",
-    "inquirer": "^7.1.0",
+    "get-stdin": "^8.0.0",
+    "inquirer": "^7.2.0",
     "inquirer-autocomplete-prompt-ipt": "^2.0.0",
     "inquirer-ordinal-prompt": "^1.0.0",
     "reopen-tty": "^1.1.2",
     "string-width": "~4.2.0",
-    "yargs": "^15.3.0"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "ava": "^3.5.0",
+    "ava": "^3.9.0",
     "eslint": "^6.7.0",
     "eslint-config-prettier": "^6.7.0",
     "lodash.template": "^4.5.0",
