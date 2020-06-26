@@ -130,7 +130,7 @@ Here we get a simple list of branchs `git branch -a`, pipe into `ipt` and pipe t
 <br />
 
 <p align="center">
-<img alt="`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git" width="600" src="https://ruyadorno.github.io/svg-demos/ipt-demos/input.svg" />
+<img alt="`git branch -a | ipt | xargs git checkout` selects a branch name from menu and that branch gets checked out by git" width="600" src="https://ruyadorno.github.io/svg-demos/ipt-demos/git-checkout.svg" />
 </p>
 
 <br/>
