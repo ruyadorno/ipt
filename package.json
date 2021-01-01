@@ -43,7 +43,7 @@
     "extract-path": "^2.0.0",
     "fuzzysearch": "^1.0.3",
     "get-stdin": "^8.0.0",
-    "inquirer": "^7.2.0",
+    "inquirer": "^7.3.3",
     "inquirer-autocomplete-prompt-ipt": "^2.0.0",
     "inquirer-ordinal-prompt": "^1.0.0",
     "reopen-tty": "^1.1.2",
