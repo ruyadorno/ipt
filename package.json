@@ -52,11 +52,11 @@
   },
   "devDependencies": {
     "ava": "^3.15.0",
-    "eslint": "^7.3.1",
-    "eslint-config-prettier": "^6.11.0",
+    "eslint": "^7.16.0",
+    "eslint-config-prettier": "^7.1.0",
     "lodash.template": "^4.5.0",
     "mock-require": "^3.0.1",
-    "prettier": "^2.0.5",
+    "prettier": "^2.2.1",
     "tempfile": "^3.0.0"
   },
   "license": "MIT"
