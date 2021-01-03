@@ -216,6 +216,43 @@ test(
 	})
 );
 
+test(
+	"should be able to use input option with no default value",
+	unit({
+		input: [],
+		output: ["ipsum"],
+		actions: [key.i, key.p, key.s, key.u, key.m],
+		opts: {
+			input: true
+		}
+	})
+);
+
+test(
+	"should be able to use input option using stdin as default value",
+	unit({
+		input: ["foo\n"],
+		output: ["\"foo ipsum\""],
+		actions: [[" "], key.i, key.p, key.s, key.u, key.m],
+		opts: {
+			input: true
+		}
+	})
+);
+
+test(
+	"should be able to use input option with default option",
+	unit({
+		input: ["bar"],
+		output: ["\"foo ipsum\""],
+		actions: [key.i, key.p, key.s, key.u, key.m],
+		opts: {
+			default: "foo ",
+			input: true
+		}
+	})
+);
+
 if (!process.env.TRAVISTEST && !process.env.APPVEYOR) {
 	test.serial.cb("should copy to clipboard from cli", t => {
 		const stdinfile = tempfile();
@@ -539,4 +576,18 @@ if (!process.env.APPVEYOR) {
 			output: `banana,oranges,mangoes`
 		})
 	);
+
+	test.cb(
+		"should be able to use --input option",
+		cli({
+			cmd: `node ${path.join("src", "cli.js")} "${path.join(
+			"test",
+			"fixtures",
+			"white space"
+		)}" --stdin-tty=<%= stdin %> --input --debug`,
+			input: [" ", "-", "-", "b", "a", "r", "\n"],
+			output: "\"white space --bar\""
+		})
+	);
+
 }

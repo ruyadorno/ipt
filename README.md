@@ -28,6 +28,7 @@
 	- [Select multiple items](#select-multiple-items)
 	- [Fuzzysearch (autocomplete mode)](#fuzzysearch-autocomplete-mode)
 	- [Extract path from result](#extract-path-from-result)
+	- [Input prompt](#input-prompt)
 	- [Copy to clipboard](#copy-to-clipboard)
 	- [Customization](#customization)
 	- [Node.js based](#nodejs-based)
@@ -66,6 +67,8 @@ Selected data is also output to _stdout_ allowing for easily composing various w
 
 ## :newspaper: News
 
+- **v3.2.0:**
+  - Added `-i` option for arbitrary input prompts
 - **v3.1.0:**
   - Added `-o` option for ordered multiple choice selection
 - **v2.1.0:**
@@ -76,8 +79,6 @@ Selected data is also output to _stdout_ allowing for easily composing various w
   - Added `-0` option for better null char compatibility
   - Added `-S` option for setting number of lines to be displayed
   - Added a proper programmatic API
-  - Updated all dependencies to their latest versions
-  - **ipt** now requires node@8+
 - **v1.1.0:** Added autocomplete (or fuzzy finder) mode `ipt -a`
 
 <br />
@@ -99,6 +100,10 @@ Using `-a` or `--autocomplete` option switchs the behavior of the interactive li
 ### Extract path from result
 
 A convenient option that helps extract file system path values out of the selected item, very useful when manipulating verbose output. Use `-p` or `--extract-path` options.
+
+### Input prompt
+
+Use the `-i` or `--input` option in order to use **ipt** as a simple input prompt, default values can be set using standard input or the `--default` argument.
 
 ### Copy to clipboard
 
@@ -206,6 +211,7 @@ Options:
   -P, --default-separator  Separator element for default items          [string]
   -e, --file-encoding      Encoding for file <path>, defaults to utf8   [string]
   -h, --help               Shows this help message                     [boolean]
+  -i, --input              Open an interactive input prompt            [boolean]
   -m, --multiple           Allows the selection of multiple items      [boolean]
   -o, --ordered            Selects multiple items in order             [boolean]
   -M, --message            Replaces interface message                   [string]
@@ -268,4 +274,4 @@ Are you wondering what can you do or how would you start contributing to iPipeTo
 
 ## License
 
-[MIT](LICENSE) © 2019 [Ruy Adorno](http://ruyadorno.com)
+[MIT](LICENSE) © 2021 [Ruy Adorno](http://ruyadorno.com)

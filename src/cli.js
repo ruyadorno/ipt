@@ -40,6 +40,8 @@ const { argv } = yargs
 	.help("h")
 	.alias("h", "help")
 	.describe("h", "Shows this help message")
+	.alias("i", "input")
+	.describe("i", "Open an interactive input prompt")
 	.alias("m", "multiple")
 	.describe("m", "Allows the selection of multiple items")
 	.alias("o", "ordered")
@@ -59,7 +61,7 @@ const { argv } = yargs
 	.alias("u", "unquoted")
 	.describe("u", "Force the output to be unquoted")
 	.alias("v", "version")
-	.boolean(["0", "a", "c", "d", "h", "m", "o", "0", "t", "p", "u", "v"])
+	.boolean(["0", "a", "c", "d", "h", "i", "m", "o", "0", "t", "p", "u", "v"])
 	.string(["e", "M", "s", "D", "P"])
 	.number(["S"])
 	.epilog("Visit https://github.com/ruyadorno/ipt for more info");
@@ -97,7 +99,7 @@ function end(data) {
 }
 
 function startIpt(input) {
-	if (!input) {
+	if (!input && !argv.input) {
 		return yargs.showHelp("log");
 	}
 
