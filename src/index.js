@@ -102,6 +102,11 @@ function iPipeTo(
 			...opts,
 			type: "list"
 		},
+		input: {
+			...opts,
+			type: "input",
+			message: options.message || "Input any value to standard output:",
+		},
 		multiple: {
 			...opts,
 			type: "checkbox",
@@ -128,6 +133,7 @@ function iPipeTo(
 	};
 
 	const promptType =
+		(options.input && promptTypes.input) ||
 		(options.ordered && promptTypes.ordered) ||
 		(options.multiple && promptTypes.multiple) ||
 		(options.autocomplete && promptTypes.autocomplete) ||
@@ -137,10 +143,25 @@ function iPipeTo(
 		promptType.default = getDefaultChoices(promptType);
 	}
 
+	let defaultInputValue
+	if (promptType.type === "input") {
+		defaultInputValue = options.default
+			|| input.join(options.separator).trim()
+			|| ""
+		if (defaultInputValue)
+			promptType.message = options.message || "Edit value to standard output:"
+	}
+
 	const result = prompt(promptType);
 
 	if (__prompt) {
 		__prompt.ui = result.ui;
+	}
+
+	// input prompt default value
+	if (defaultInputValue) {
+		for (const char of defaultInputValue)
+			result.ui.rl.input.emit('keypress', char);
 	}
 
 	return result
