@@ -31,7 +31,7 @@ const pkg = require("../package.json");
 const sep = require("os").EOL;
 const cwd = process.cwd();
 const helpMessageOutput = fs
-	.readFileSync(path.join(__dirname, "fixtures", "help"), { encoding: "utf8" })
+	.readFileSync(path.resolve(__dirname, "fixtures", "help"), { encoding: "utf8" })
 	.replace(/\\n/, sep)
 	.trim();
 
@@ -258,7 +258,7 @@ if (!process.env.TRAVISTEST && !process.env.APPVEYOR) {
 		const stdinfile = tempfile();
 		const stdin = fs.createWriteStream(stdinfile);
 		const runner = exec(
-			`node ${path.join("src", "cli.js")} ${path.join(
+			`node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"clipboard"
@@ -308,7 +308,7 @@ const cli = ({ cmd, input = [], output, error }) => t => {
 test.cb(
 	"should be able to pipe data from stdin",
 	cli({
-		cmd: `echo banana,peach,apple | node ${path.join(
+		cmd: `echo banana,peach,apple | node ${path.resolve(
 			"src",
 			"cli.js"
 		)} --stdin-tty=<%= stdin %> -s , --debug`,
@@ -320,7 +320,7 @@ test.cb(
 test.cb(
 	"should not quote result args with white space if --unquoted option is given",
 	cli({
-		cmd: `node ${path.join("src", "cli.js")} "${path.join(
+		cmd: `node ${path.resolve("src", "cli.js")} "${path.resolve(
 			"test",
 			"fixtures",
 			"white space"
@@ -333,7 +333,7 @@ test.cb(
 test.cb(
 	"should quote result args with white space",
 	cli({
-		cmd: `node ${path.join("src", "cli.js")} "${path.join(
+		cmd: `node ${path.resolve("src", "cli.js")} "${path.resolve(
 			"test",
 			"fixtures",
 			"white space"
@@ -346,7 +346,7 @@ test.cb(
 test.cb(
 	"should display error if provided file is not found",
 	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
+		cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 			"test",
 			"fixtures",
 			"inexistentfilename"
@@ -358,7 +358,7 @@ test.cb(
 test.cb(
 	"should display version on --version",
 	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
+		cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 			"test",
 			"fixtures",
 			"simpletest"
@@ -370,7 +370,7 @@ test.cb(
 test.cb(
 	"should display help message on empty invocation",
 	cli({
-		cmd: `node ${path.join("src", "cli.js")}`,
+		cmd: `node ${path.resolve("src", "cli.js")}`,
 		output: helpMessageOutput
 	})
 );
@@ -378,7 +378,7 @@ test.cb(
 test.cb(
 	"should display help message on --help",
 	cli({
-		cmd: `node ${path.join("src", "cli.js")} --help`,
+		cmd: `node ${path.resolve("src", "cli.js")} --help`,
 		output: helpMessageOutput
 	})
 );
@@ -387,7 +387,7 @@ test.cb(
 	"should run from cli using default platform separator",
 	process.platform === "win32"
 		? cli({
-				cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 					"test",
 					"fixtures",
 					"crlf"
@@ -396,7 +396,7 @@ test.cb(
 				output: "a"
 		  })
 		: cli({
-				cmd: `node ${path.join("src", "cli.js")} ${path.join(
+				cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 					"test",
 					"fixtures",
 					"simpletest"
@@ -409,7 +409,7 @@ test.cb(
 test.cb(
 	"should get valid paths if using -p option",
 	cli({
-		cmd: `node ${path.join("src", "cli.js")} ${path.join(
+		cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 			"test",
 			"fixtures",
 			"files"
@@ -425,7 +425,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should read utf16 encode using --file-encoding option",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"utf16encode"
@@ -438,7 +438,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should read ascii encode using --file-encoding option",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"asciiencode"
@@ -452,7 +452,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should be able to use custom separators with --separator",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"test.csv"
@@ -465,7 +465,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should run in autocomplete mode from cli",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"simpletest"
@@ -478,7 +478,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should run using multiple from cli",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"simpletest"
@@ -491,7 +491,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should get valid results if using -0 (null char separator) option",
 		cli({
-			cmd: `find test/fixtures -print0 | node ${path.join(
+			cmd: `find test/fixtures -print0 | node ${path.resolve(
 				"src",
 				"cli.js"
 			)} -a -0 --stdin-tty=<%= stdin %> | xargs -0 cat`,
@@ -503,7 +503,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should run from cli using a weird separator",
 		cli({
-			cmd: `echo foo:™£:bar:™£:lorem:™£:ipsum:™£:dolor:™£:sit:™£:amet:™£:now | node ${path.join(
+			cmd: `echo foo:™£:bar:™£:lorem:™£:ipsum:™£:dolor:™£:sit:™£:amet:™£:now | node ${path.resolve(
 				"src",
 				"cli.js"
 			)} --stdin-tty=<%= stdin %> -s :™£:`,
@@ -515,7 +515,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should be able to specify a default selected option in a list",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"simpletest"
@@ -528,7 +528,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should be able to specify a list of default choices to select for multiple choices",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"simpletest"
@@ -541,7 +541,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should be able to use ---default-separator to split multiple default choices",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"simpletest"
@@ -554,7 +554,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should be able use --separator as the default separator to split multiple default choices",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"test.csv"
@@ -567,7 +567,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should be able override --separator with --default-separator to split multiple default choices",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} ${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} ${path.resolve(
 				"test",
 				"fixtures",
 				"test.csv"
@@ -580,7 +580,7 @@ if (!process.env.APPVEYOR) {
 	test.cb(
 		"should be able to use --input option",
 		cli({
-			cmd: `node ${path.join("src", "cli.js")} "${path.join(
+			cmd: `node ${path.resolve("src", "cli.js")} "${path.resolve(
 			"test",
 			"fixtures",
 			"white space"
