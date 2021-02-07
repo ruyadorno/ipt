@@ -5,7 +5,8 @@
   "repository": "ruyadorno/ipt",
   "author": {
     "name": "Ruy Adorno",
-    "url": "ruyadorno.com"
+    "url": "ruyadorno.com",
+    "twitter": "ruyadorno"
   },
   "bin": {
     "ipt": "src/cli.js"
@@ -17,7 +18,10 @@
   },
   "scripts": {
     "pretest": "eslint src/*.js",
-    "test": "ava --tap"
+    "test": "ava --tap",
+    "preversion": "npm test",
+    "postversion": "npm publish",
+    "prepublishOnly": "git push origin --follow-tags"
   },
   "files": [
     "src",
